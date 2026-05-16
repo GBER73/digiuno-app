@@ -225,6 +225,18 @@
     /* TOAST */
     .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); background: #1a1a18; color: #f0efe8; padding: 10px 22px; border-radius: 22px; font-size: 13px; font-weight: 500; opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; z-index: 200; }
     .toast.show { opacity: 1; }
+    /* MEDICAL WARNING */
+    .medical-warning { background: #fff0f0; border: 1.5px solid #d93025; border-radius: var(--radius-lg); padding: 13px 14px; margin-bottom: 10px; display: flex; gap: 10px; align-items: flex-start; }
+    @media (prefers-color-scheme: dark) { .medical-warning { background: #3c1a18; border-color: #f28b82; } }
+    .medical-warning i { color: #d93025; font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    @media (prefers-color-scheme: dark) { .medical-warning i { color: #f28b82; } }
+    .medical-warning p { font-size: 12px; color: #d93025; line-height: 1.55; font-weight: 500; margin: 0; }
+    @media (prefers-color-scheme: dark) { .medical-warning p { color: #f28b82; } }
+    /* UPDATE BUTTON */
+    .update-bar { background: var(--bg-secondary); border-top: 0.5px solid var(--border); padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .update-bar span { font-size: 12px; color: var(--text-secondary); }
+    /* BACKUP */
+    .backup-row { display: flex; gap: 8px; margin-top: 8px; }
 
     /* GOAL INPUT */
     .water-goal-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
@@ -246,6 +258,15 @@
     <button class="header-share" onclick="openShare()" aria-label="Condividi app">
       <i class="ti ti-share" aria-hidden="true"></i> Condividi
     </button>
+  </div>
+
+
+  <!-- MEDICAL WARNING -->
+  <div style="padding:10px 12px 0">
+    <div class="medical-warning">
+      <i class="ti ti-alert-triangle" aria-hidden="true"></i>
+      <p>⚕️ <strong>Avviso medico:</strong> Prima di intraprendere digiuni prolungati (oltre 16h) consulta il tuo medico, specialmente in presenza di diabete, ipoglicemia, gravidanza, disturbi alimentari, pressione bassa o altre patologie. Il digiuno non è adatto a tutti.</p>
+    </div>
   </div>
 
   <!-- TABS -->
@@ -308,6 +329,13 @@
       </div>
       <div style="font-size:13px;color:var(--text-secondary);text-align:center;margin-bottom:10px" id="cupSub">0 ml</div>
       <div class="water-prog-track"><div class="water-prog-fill" id="wProgFill" style="width:0%"></div></div>
+      <!-- Date selector for past days -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <label style="font-size:12px;color:var(--text-secondary);flex-shrink:0">Giorno:</label>
+        <div style="position:relative;flex:1"><i class="ti ti-calendar" style="position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--text-tertiary);pointer-events:none"></i>
+        <input type="date" class="dt-inp" id="waterDateSel" onchange="onWaterDateChange()" style="width:100%"></div>
+        <button class="btn-sm" onclick="setWaterToday()">Oggi</button>
+      </div>
       <div class="cups-grid" id="cupsGrid"></div>
       <div class="water-goal-row">
         <label>Obiettivo ml/giorno:</label>
@@ -427,6 +455,16 @@
         <div class="leg-i"><div class="leg-sq" style="background:#4CAF50"></div>Acqua (bic.)</div>
       </div>
     </div>
+    <!-- Backup -->
+    <div class="card">
+      <h2>💾 Backup dati</h2>
+      <p style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">Esporta i tuoi dati prima di aggiornare l'app per non perderli.</p>
+      <div class="backup-row">
+        <button class="btn-sm" style="flex:1" onclick="exportData()"><i class="ti ti-download" style="vertical-align:-2px;margin-right:4px"></i>Esporta JSON</button>
+        <button class="btn-sm" style="flex:1" onclick="document.getElementById('importFile').click()"><i class="ti ti-upload" style="vertical-align:-2px;margin-right:4px"></i>Importa JSON</button>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+      </div>
+    </div>
     <!-- History list -->
     <div id="histList"></div>
   </div>
@@ -443,6 +481,12 @@
       <h2>Consigli pratici</h2>
       <div id="tipsList"></div>
     </div>
+  </div>
+
+  <!-- UPDATE BAR -->
+  <div class="update-bar">
+    <span><i class="ti ti-refresh" style="vertical-align:-2px;margin-right:4px"></i>Aggiornamenti manuali</span>
+    <button class="btn-sm" onclick="manualUpdate()"><i class="ti ti-refresh" style="vertical-align:-2px;margin-right:3px"></i>Aggiorna app</button>
   </div>
 
 </div><!-- /app -->
@@ -626,19 +670,19 @@ function renderProtocols(){
 function setProtocol(id){protocol=id;localStorage.setItem('ij_protocol',id);renderProtocols();if(activeFast)tickTimer();showToast('Protocollo: '+getProtocol().name)}
 
 /* ═══════════════ WATER ═══════════════ */
-function addCup(){const k=todayKey();const cur=waterData[k]||0;if(cur>=MAX_CUPS){showToast('Massimo '+MAX_CUPS+' bicchieri');return}waterData[k]=cur+1;localStorage.setItem('ij_water',JSON.stringify(waterData));renderWater()}
-function removeCup(){const k=todayKey();if(!waterData[k])return;waterData[k]=Math.max(0,waterData[k]-1);localStorage.setItem('ij_water',JSON.stringify(waterData));renderWater()}
+function addCup(){const k=selectedWaterDate||todayKey();const cur=waterData[k]||0;if(cur>=MAX_CUPS){showToast('Massimo '+MAX_CUPS+' bicchieri');return}waterData[k]=cur+1;localStorage.setItem('ij_water',JSON.stringify(waterData));renderWater()}
+function removeCup(){const k=selectedWaterDate||todayKey();if(!waterData[k])return;waterData[k]=Math.max(0,waterData[k]-1);localStorage.setItem('ij_water',JSON.stringify(waterData));renderWater()}
 function updateGoal(){waterGoal=parseInt(document.getElementById('goalInput').value)||2000;localStorage.setItem('ij_wgoal',waterGoal);renderWater()}
 
 function renderWater(){
-  const cups=getTodayCups(),ml=cups*ML,pct=Math.min(100,Math.round(ml/waterGoal*100));
+  const k=selectedWaterDate||todayKey();const cups=waterData[k]||0,ml=cups*ML,pct=Math.min(100,Math.round(ml/waterGoal*100));
   document.getElementById('cupCount').textContent=cups;
-  document.getElementById('cupSub').textContent=ml+' ml di '+waterGoal+' ml — '+pct+'%';
+  const isToday=(k===todayKey());document.getElementById('cupSub').textContent=(isToday?'Oggi: ':k+': ')+ml+' ml di '+waterGoal+' ml — '+pct+'%';
   document.getElementById('wProgFill').style.width=pct+'%';
   document.getElementById('goalInput').value=waterGoal;
   const grid=document.getElementById('cupsGrid');grid.innerHTML='';
   for(let i=0;i<MAX_CUPS;i++){
-    const btn=document.createElement('button');btn.className='cup-btn'+(i<cups?' filled':'');
+    const btn=document.createElement('button');btn.className='cup-btn'+(i<(waterData[k]||0)?' filled':'');
     btn.innerHTML='<i class="ti ti-glass-full"></i>';btn.onclick=()=>i<cups?removeCup():addCup();
     grid.appendChild(btn);
   }
@@ -905,11 +949,85 @@ function sw(name){
   if(name==='guida')renderGuida();
 }
 
+
+/* ═══════════════ WATER DATE ═══════════════ */
+let selectedWaterDate = todayKey();
+
+function setWaterToday(){
+  selectedWaterDate = todayKey();
+  document.getElementById('waterDateSel').value = selectedWaterDate;
+  renderWater();
+}
+
+function onWaterDateChange(){
+  selectedWaterDate = document.getElementById('waterDateSel').value || todayKey();
+  renderWater();
+}
+
+function getSelectedCups(){ return waterData[selectedWaterDate] || 0; }
+
+/* ═══════════════ EXPORT / IMPORT ═══════════════ */
+function exportData(){
+  const data = {
+    version: 2,
+    exportDate: new Date().toISOString(),
+    fasts, waterData, waterGoal, weightData, diaryData, protocol
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'digiuno-backup-' + todayKey() + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Backup esportato! 💾');
+}
+
+function importData(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if(!data.version) throw new Error('File non valido');
+      if(!confirm('Importare i dati? I dati attuali verranno sovrascritti.')) return;
+      if(data.fasts) { fasts = data.fasts; localStorage.setItem('ij_fasts', JSON.stringify(fasts)); }
+      if(data.waterData) { waterData = data.waterData; localStorage.setItem('ij_water', JSON.stringify(waterData)); }
+      if(data.waterGoal) { waterGoal = data.waterGoal; localStorage.setItem('ij_wgoal', waterGoal); }
+      if(data.weightData) { weightData = data.weightData; localStorage.setItem('ij_weight', JSON.stringify(weightData)); }
+      if(data.diaryData) { diaryData = data.diaryData; localStorage.setItem('ij_diary', JSON.stringify(diaryData)); }
+      if(data.protocol) { protocol = data.protocol; localStorage.setItem('ij_protocol', protocol); }
+      showToast('Dati importati con successo! ✓');
+      renderHistory(); renderWater();
+    } catch(err) {
+      showToast('Errore: file non valido');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+/* ═══════════════ MANUAL UPDATE ═══════════════ */
+function manualUpdate(){
+  if(!confirm('Aggiornare l'app? La pagina verrà ricaricata.')) return;
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.getRegistrations().then(regs => {
+      regs.forEach(r => r.update());
+      setTimeout(() => { window.location.reload(true); }, 800);
+    });
+  } else {
+    window.location.reload(true);
+  }
+}
+
 /* ═══════════════ INIT ═══════════════ */
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(()=>{})}
 const _now=new Date();
 document.getElementById('sDate').value=_now.getFullYear()+'-'+pad(_now.getMonth()+1)+'-'+pad(_now.getDate());
 document.getElementById('sTime').value=pad(_now.getHours())+':'+pad(_now.getMinutes());
+selectedWaterDate = todayKey();
+document.getElementById('waterDateSel').value = selectedWaterDate;
 renderActiveFast();renderWater();renderProtocols();
 </script>
 </body>

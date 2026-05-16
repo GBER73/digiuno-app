@@ -1,4 +1,4 @@
-const CACHE = 'digiuno-v1';
+const CACHE = 'digiuno-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -8,8 +8,9 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', e => {
+  // Do NOT skipWaiting — wait for manual update
   e.waitUntil(
-    caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting())
+    caches.open(CACHE).then(cache => cache.addAll(ASSETS))
   );
 });
 
