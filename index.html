@@ -716,7 +716,8 @@ function renderFChart(data) {
     var d=new Date(sorted[i].start);
     labels.push(pad(d.getDate())+'/'+pad(d.getMonth()+1));
     durs.push(parseFloat(sorted[i].durationH.toFixed(1)));
-    cups.push(sorted[i].cups||0);
+    var dayK=sorted[i].start.substring(0,10); // YYYY-MM-DD of start
+    cups.push(water[dayK]||0); // always read live from water tracker
   }
   var wrap=document.getElementById('fChartWrap');
   var availW=wrap?wrap.offsetWidth-24:320;
