@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Digiuno">
-  <meta name="description" content="Tracker digiuno intermittente con fasi metaboliche e acqua">
+  <meta name="description" content="Tracker digiuno intermittente con fasi metaboliche, acqua, peso e statistiche">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="icon" type="image/png" href="icons/icon-192.png">
@@ -23,14 +23,17 @@
       --text-secondary: #6b6a64;
       --text-tertiary: #9c9a92;
       --border: rgba(0,0,0,0.12);
-      --border-md: rgba(0,0,0,0.2);
+      --border-md: rgba(0,0,0,0.22);
       --info: #178DD8;
       --info-bg: #E6F1FB;
       --danger: #d93025;
       --danger-bg: #fce8e6;
       --success: #1e8e3e;
+      --success-bg: #e6f4ea;
+      --warning: #b06000;
+      --warning-bg: #fef3e2;
       --radius-md: 8px;
-      --radius-lg: 12px;
+      --radius-lg: 14px;
     }
     @media (prefers-color-scheme: dark) {
       :root {
@@ -41,142 +44,253 @@
         --text-secondary: #9c9a92;
         --text-tertiary: #6b6a64;
         --border: rgba(255,255,255,0.1);
-        --border-md: rgba(255,255,255,0.2);
+        --border-md: rgba(255,255,255,0.22);
         --info: #4aabef;
         --info-bg: #0c2d45;
         --danger: #f28b82;
         --danger-bg: #3c1a18;
         --success: #5bb974;
+        --success-bg: #1a3022;
+        --warning: #fcc934;
+        --warning-bg: #3a2800;
       }
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html, body { height: 100%; background: var(--bg-tertiary); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    html, body { height: 100%; background: var(--bg-tertiary); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 15px; }
     .app { max-width: 480px; margin: 0 auto; background: var(--bg-primary); min-height: 100%; display: flex; flex-direction: column; }
+
+    /* HEADER */
     .header { padding: 52px 16px 10px; display: flex; align-items: center; gap: 10px; border-bottom: 0.5px solid var(--border); background: var(--bg-primary); position: sticky; top: 0; z-index: 10; }
-    .header-icon { width: 34px; height: 34px; border-radius: 10px; background: var(--info-bg); display: flex; align-items: center; justify-content: center; }
-    .header-icon i { font-size: 18px; color: var(--info); }
-    .header h1 { font-size: 16px; font-weight: 600; color: var(--text-primary); }
-    .header p { font-size: 11px; color: var(--text-secondary); }
-    .tabs { display: flex; border-bottom: 0.5px solid var(--border); background: var(--bg-primary); position: sticky; top: 72px; z-index: 10; overflow-x: auto; }
+    .header-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--info-bg); display: flex; align-items: center; justify-content: center; }
+    .header-icon i { font-size: 20px; color: var(--info); }
+    .header h1 { font-size: 17px; font-weight: 600; color: var(--text-primary); }
+    .header p { font-size: 12px; color: var(--text-secondary); }
+    .header-share { margin-left: auto; background: var(--info-bg); border: none; border-radius: 8px; padding: 7px 12px; color: var(--info); font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+    .header-share:active { opacity: 0.7; }
+
+    /* TABS */
+    .tabs { display: flex; border-bottom: 0.5px solid var(--border); background: var(--bg-primary); position: sticky; top: 74px; z-index: 10; overflow-x: auto; }
     .tabs::-webkit-scrollbar { display: none; }
-    .tab { flex: 1; min-width: 58px; padding: 9px 4px; font-size: 11px; font-weight: 500; text-align: center; color: var(--text-secondary); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: color 0.15s; }
+    .tab { flex: 1; min-width: 52px; padding: 9px 2px; font-size: 11px; font-weight: 500; text-align: center; color: var(--text-secondary); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: color 0.15s; }
     .tab.active { color: var(--info); border-bottom: 2px solid var(--info); }
+
+    /* SECTIONS */
     .section { display: none; padding: 12px; flex: 1; }
     .section.active { display: block; }
+
+    /* CARDS */
     .card { background: var(--bg-secondary); border-radius: var(--radius-lg); padding: 14px; margin-bottom: 10px; border: 0.5px solid var(--border); }
-    .card h2 { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
-    .timer-big { font-size: 44px; font-weight: 300; color: var(--text-primary); letter-spacing: -2px; font-variant-numeric: tabular-nums; text-align: center; display: block; }
-    .timer-sub { font-size: 11px; color: var(--text-secondary); text-align: center; display: block; margin-bottom: 12px; }
-    .phase-badge { display: flex; align-items: center; gap: 8px; background: var(--bg-primary); border-radius: var(--radius-md); padding: 10px 12px; margin-bottom: 8px; border: 0.5px solid var(--border); }
-    .phase-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .phase-name { font-size: 14px; font-weight: 600; color: var(--text-primary); }
-    .phase-desc { font-size: 11px; color: var(--text-secondary); margin-top: 2px; line-height: 1.4; }
-    .prog-track { background: var(--bg-primary); border-radius: 999px; height: 7px; margin: 6px 0 3px; overflow: hidden; border: 0.5px solid var(--border); }
+    .card h2 { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+
+    /* TIMER */
+    .timer-big { font-size: 46px; font-weight: 300; color: var(--text-primary); letter-spacing: -2px; font-variant-numeric: tabular-nums; text-align: center; display: block; }
+    .timer-sub { font-size: 12px; color: var(--text-secondary); text-align: center; display: block; margin-bottom: 12px; }
+
+    /* PHASE BADGE */
+    .phase-badge { display: flex; align-items: center; gap: 9px; background: var(--bg-primary); border-radius: var(--radius-md); padding: 11px 13px; margin-bottom: 9px; border: 0.5px solid var(--border); }
+    .phase-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+    .phase-name { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+    .phase-desc { font-size: 12px; color: var(--text-secondary); margin-top: 2px; line-height: 1.4; }
+
+    /* PROGRESS */
+    .prog-track { background: var(--bg-primary); border-radius: 999px; height: 8px; margin: 7px 0 4px; overflow: hidden; border: 0.5px solid var(--border); }
     .prog-fill { height: 100%; border-radius: 999px; transition: width 0.5s ease; }
-    .prog-labels { display: flex; justify-content: space-between; font-size: 9px; color: var(--text-tertiary); }
+    .prog-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-tertiary); }
+
+    /* TARGET PROGRESS */
+    .target-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .target-label { font-size: 12px; color: var(--text-secondary); flex-shrink: 0; }
+    .target-pct { font-size: 13px; font-weight: 600; color: var(--info); flex-shrink: 0; min-width: 38px; text-align: right; }
+
+    /* PHASE TIMELINE */
     .ph-row { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 0.5px solid var(--border); }
     .ph-row:last-child { border-bottom: none; }
-    .ph-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
-    .ph-name { font-size: 12px; font-weight: 500; color: var(--text-primary); }
-    .ph-hrs { font-size: 10px; color: var(--text-secondary); }
+    .ph-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+    .ph-name { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+    .ph-hrs { font-size: 11px; color: var(--text-secondary); }
     .ph-row.upcoming .ph-name { color: var(--text-tertiary); }
-    .form-lbl { font-size: 11px; font-weight: 500; color: var(--text-secondary); margin-bottom: 5px; display: block; }
+
+    /* FORMS */
+    .form-lbl { font-size: 12px; font-weight: 500; color: var(--text-secondary); margin-bottom: 5px; display: block; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
     .inp-wrap { position: relative; }
-    .inp-wrap i { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--text-tertiary); pointer-events: none; }
-    .dt-inp { width: 100%; padding: 9px 9px 9px 30px; font-size: 13px; border-radius: var(--radius-md); border: 0.5px solid var(--border-md); background: var(--bg-primary); color: var(--text-primary); font-family: inherit; }
+    .inp-wrap i { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); font-size: 15px; color: var(--text-tertiary); pointer-events: none; }
+    .dt-inp { width: 100%; padding: 9px 9px 9px 31px; font-size: 13px; border-radius: var(--radius-md); border: 0.5px solid var(--border-md); background: var(--bg-primary); color: var(--text-primary); font-family: inherit; }
     .dt-inp:focus { outline: none; border-color: var(--info); box-shadow: 0 0 0 2px rgba(23,141,216,0.15); }
+    textarea.dt-inp { padding-left: 12px; resize: none; height: 72px; font-size: 13px; line-height: 1.5; }
+
+    /* BUTTONS */
     .btn-primary { width: 100%; padding: 12px; background: var(--info); color: white; border: none; border-radius: var(--radius-md); font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
     .btn-primary:active { opacity: 0.8; }
     .btn-danger { background: var(--danger-bg); color: var(--danger); border: 0.5px solid var(--danger); border-radius: var(--radius-md); padding: 10px 14px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; }
     .btn-sm { padding: 7px 12px; font-size: 12px; border-radius: 7px; border: 0.5px solid var(--border-md); background: var(--bg-secondary); color: var(--text-primary); cursor: pointer; font-family: inherit; }
     .btn-sm:active { opacity: 0.7; }
+
+    /* PROTOCOL SELECTOR */
+    .protocol-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    .proto-btn { padding: 10px 8px; border-radius: var(--radius-md); border: 1.5px solid var(--border-md); background: var(--bg-primary); color: var(--text-primary); cursor: pointer; text-align: center; font-family: inherit; transition: all 0.15s; }
+    .proto-btn.active { border-color: var(--info); background: var(--info-bg); color: var(--info); }
+    .proto-btn .proto-name { font-size: 15px; font-weight: 700; }
+    .proto-btn .proto-desc { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+    .proto-btn.active .proto-desc { color: var(--info); opacity: 0.8; }
+
+    /* STATS */
     .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
     .stat-c { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 10px 12px; border: 0.5px solid var(--border); }
-    .stat-v { font-size: 22px; font-weight: 500; color: var(--text-primary); }
-    .stat-l { font-size: 10px; color: var(--text-secondary); margin-top: 2px; }
+    .stat-v { font-size: 24px; font-weight: 500; color: var(--text-primary); }
+    .stat-l { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+    /* STREAK */
+    .streak-bar { display: flex; gap: 4px; margin-bottom: 4px; }
+    .streak-day { flex: 1; height: 28px; border-radius: 5px; background: var(--bg-secondary); border: 0.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-tertiary); }
+    .streak-day.done { background: var(--info); border-color: var(--info); color: white; }
+    .streak-day.goal { background: var(--success); border-color: var(--success); color: white; }
+
+    /* CHART */
     .chart-wrap { background: var(--bg-secondary); border-radius: var(--radius-lg); border: 0.5px solid var(--border); margin-bottom: 10px; }
     .chart-hdr { padding: 10px 12px 6px; display: flex; justify-content: space-between; align-items: center; }
-    .chart-hdr h2 { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+    .chart-hdr h2 { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
     .chart-scroll { overflow-x: auto; padding: 0 12px 8px; }
     .chart-scroll::-webkit-scrollbar { height: 3px; }
     .chart-scroll::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 2px; }
     .legend { display: flex; gap: 10px; padding: 2px 12px 10px; flex-wrap: wrap; }
-    .leg-i { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--text-secondary); }
-    .leg-sq { width: 9px; height: 9px; border-radius: 2px; }
-    .hi-item { background: var(--bg-primary); border-radius: var(--radius-md); padding: 10px 12px; margin-bottom: 8px; border: 0.5px solid var(--border); display: flex; align-items: center; gap: 10px; }
-    .hi-bar { width: 4px; height: 40px; border-radius: 2px; flex-shrink: 0; }
-    .hi-del { background: none; border: none; color: var(--text-tertiary); cursor: pointer; font-size: 18px; padding: 4px; min-width: 32px; min-height: 32px; }
+    .leg-i { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-secondary); }
+    .leg-sq { width: 10px; height: 10px; border-radius: 2px; }
+
+    /* HISTORY */
+    .hi-item { background: var(--bg-primary); border-radius: var(--radius-md); padding: 10px 12px; margin-bottom: 8px; border: 0.5px solid var(--border); display: flex; align-items: flex-start; gap: 10px; }
+    .hi-bar { width: 4px; height: 46px; border-radius: 2px; flex-shrink: 0; margin-top: 2px; }
+    .hi-del { background: none; border: none; color: var(--text-tertiary); cursor: pointer; font-size: 18px; padding: 4px; min-width: 32px; min-height: 32px; margin-left: auto; }
     .hi-del:active { color: var(--danger); }
-    .empty { text-align: center; padding: 32px 16px; color: var(--text-secondary); font-size: 13px; }
-    .empty i { font-size: 36px; display: block; margin-bottom: 10px; color: var(--text-tertiary); }
-    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1a1a18; color: #f0efe8; padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 500; opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; z-index: 999; }
-    .toast.show { opacity: 1; }
-    /* ACQUA */
-    .cup-btn { width: 40px; height: 40px; border-radius: 9px; border: 1.5px solid var(--info); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+
+    /* WATER */
+    .cup-btn { width: 42px; height: 42px; border-radius: 9px; border: 1.5px solid var(--info); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
     .cup-btn.filled { background: var(--info-bg); }
+    .cup-btn i { font-size: 20px; color: var(--border-md); }
     .cup-btn.filled i { color: var(--info); }
-    .cup-btn i { font-size: 18px; color: var(--border-md); }
-    .cup-btn:active { transform: scale(0.9); }
+    .cup-btn:active { transform: scale(0.88); }
     .cups-grid { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; margin-bottom: 12px; }
-    .water-prog-track { background: var(--bg-primary); border-radius: 999px; height: 6px; overflow: hidden; border: 0.5px solid var(--border); margin-bottom: 12px; }
+    .water-prog-track { background: var(--bg-primary); border-radius: 999px; height: 7px; overflow: hidden; border: 0.5px solid var(--border); margin-bottom: 12px; }
     .water-prog-fill { height: 100%; border-radius: 999px; background: var(--info); transition: width 0.3s; }
-    .water-hist-row { display: flex; align-items: center; gap: 7px; padding: 6px 0; border-bottom: 0.5px solid var(--border); font-size: 11px; }
+    .water-hist-row { display: flex; align-items: center; gap: 7px; padding: 6px 0; border-bottom: 0.5px solid var(--border); font-size: 12px; }
     .water-hist-row:last-child { border-bottom: none; }
-    /* GUIDA */
+
+    /* WEIGHT */
+    .weight-entry { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 0.5px solid var(--border); }
+    .weight-entry:last-child { border-bottom: none; }
+
+    /* WELLBEING */
+    .stars-row { display: flex; gap: 6px; }
+    .star-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border-md); background: var(--bg-primary); cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+    .star-btn.active { border-color: var(--info); background: var(--info-bg); }
+    .star-btn:active { transform: scale(0.88); }
+
+    /* GUIDE */
     .phase-info-card { background: var(--bg-primary); border-radius: var(--radius-lg); border: 0.5px solid var(--border); margin-bottom: 8px; overflow: hidden; }
-    .pic-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; min-height: 48px; }
-    .pic-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
-    .pic-name { font-size: 13px; font-weight: 600; color: var(--text-primary); flex: 1; }
-    .pic-hrs { font-size: 11px; color: var(--text-secondary); }
-    .pic-chev { font-size: 16px; color: var(--text-tertiary); transition: transform 0.2s; }
-    .pic-body { padding: 0 14px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.2s; }
-    .pic-body.open { max-height: 600px; padding: 0 14px 14px; }
-    .pic-body p { font-size: 12px; color: var(--text-secondary); line-height: 1.65; margin-bottom: 8px; }
+    .pic-header { display: flex; align-items: center; gap: 10px; padding: 13px 14px; cursor: pointer; min-height: 50px; }
+    .pic-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+    .pic-name { font-size: 14px; font-weight: 600; color: var(--text-primary); flex: 1; }
+    .pic-hrs { font-size: 12px; color: var(--text-secondary); }
+    .pic-chev { font-size: 17px; color: var(--text-tertiary); transition: transform 0.2s; }
+    .pic-body { padding: 0 14px; max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.2s; }
+    .pic-body.open { max-height: 700px; padding: 0 14px 14px; }
+    .pic-body p { font-size: 13px; color: var(--text-secondary); line-height: 1.65; margin-bottom: 9px; }
     .pic-body p:last-child { margin-bottom: 0; }
-    .pic-tag { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 999px; margin: 0 3px 4px 0; }
-    .pic-tags { margin-bottom: 8px; }
+    .pic-tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 999px; margin: 0 3px 5px 0; }
+    .pic-tags { margin-bottom: 9px; }
+
+    /* MISC */
     .now-row { display: flex; justify-content: flex-end; margin-bottom: 10px; }
+    .empty { text-align: center; padding: 32px 16px; color: var(--text-secondary); font-size: 13px; }
+    .empty i { font-size: 38px; display: block; margin-bottom: 10px; color: var(--text-tertiary); }
+    .section-title { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .divider { height: 0.5px; background: var(--border); margin: 10px 0; }
+    .row-between { display: flex; justify-content: space-between; align-items: center; }
+    .badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; }
+    .badge-info { background: var(--info-bg); color: var(--info); }
+    .badge-success { background: var(--success-bg); color: var(--success); }
+    .badge-warning { background: var(--warning-bg); color: var(--warning); }
+
+    /* SHARE MODAL */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal { background: var(--bg-primary); border-radius: 20px 20px 0 0; padding: 20px 20px 36px; width: 100%; max-width: 480px; transform: translateY(100%); transition: transform 0.3s ease; }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal h3 { font-size: 17px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+    .modal p { font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5; }
+    .link-box { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 12px; font-size: 13px; color: var(--info); word-break: break-all; margin-bottom: 12px; border: 0.5px solid var(--border); }
+    .modal-btns { display: flex; flex-direction: column; gap: 8px; }
+    .modal-close { position: absolute; top: 16px; right: 16px; background: var(--bg-secondary); border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 18px; cursor: pointer; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; }
+
+    /* TOAST */
+    .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); background: #1a1a18; color: #f0efe8; padding: 10px 22px; border-radius: 22px; font-size: 13px; font-weight: 500; opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; z-index: 200; }
+    .toast.show { opacity: 1; }
+
+    /* GOAL INPUT */
     .water-goal-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-    .water-goal-row label { font-size: 11px; color: var(--text-secondary); flex-shrink: 0; }
-    .water-goal-row input { flex: 1; padding: 7px 9px; font-size: 13px; border-radius: var(--radius-md); border: 0.5px solid var(--border-md); background: var(--bg-primary); color: var(--text-primary); font-family: inherit; }
+    .water-goal-row label { font-size: 12px; color: var(--text-secondary); flex-shrink: 0; }
+    .water-goal-row input { flex: 1; padding: 8px 10px; font-size: 13px; border-radius: var(--radius-md); border: 0.5px solid var(--border-md); background: var(--bg-primary); color: var(--text-primary); font-family: inherit; }
     .water-btns { display: flex; gap: 8px; }
   </style>
 </head>
 <body>
 <div class="app">
+
+  <!-- HEADER -->
   <div class="header">
     <div class="header-icon"><i class="ti ti-clock-pause" aria-hidden="true"></i></div>
     <div>
       <h1>Digiuno Intermittente</h1>
-      <p>Fasi · Acqua · Storico</p>
+      <p>Fasi · Acqua · Peso · Stats</p>
     </div>
+    <button class="header-share" onclick="openShare()" aria-label="Condividi app">
+      <i class="ti ti-share" aria-hidden="true"></i> Condividi
+    </button>
   </div>
 
+  <!-- TABS -->
   <div class="tabs">
     <div class="tab active" onclick="sw('fase')"><i class="ti ti-activity"></i> Fase</div>
     <div class="tab" onclick="sw('acqua')"><i class="ti ti-droplet"></i> Acqua</div>
-    <div class="tab" onclick="sw('registra')"><i class="ti ti-plus"></i> Registra</div>
+    <div class="tab" onclick="sw('diario')"><i class="ti ti-mood-smile"></i> Diario</div>
+    <div class="tab" onclick="sw('peso')"><i class="ti ti-scale"></i> Peso</div>
     <div class="tab" onclick="sw('storico')"><i class="ti ti-chart-bar"></i> Storico</div>
     <div class="tab" onclick="sw('guida')"><i class="ti ti-info-circle"></i> Guida</div>
   </div>
 
-  <!-- FASE -->
+  <!-- ═══════════════ TAB FASE ═══════════════ -->
   <div class="section active" id="tab-fase">
-    <div id="no-fast" class="card"><div class="empty"><i class="ti ti-clock-pause"></i>Nessun digiuno attivo.<br>Vai su <strong>Registra</strong> per iniziare.</div></div>
+    <div id="no-fast" class="card">
+      <div class="empty"><i class="ti ti-clock-pause"></i>Nessun digiuno attivo.<br>Vai su <strong>Storico</strong> → Nuovo per iniziare.</div>
+    </div>
     <div id="fast-ui" style="display:none">
+      <!-- Timer -->
       <div class="card">
         <h2>Digiuno in corso</h2>
         <span class="timer-big" id="timerBig">00:00:00</span>
         <span class="timer-sub" id="timerSub">—</span>
+        <!-- Target progress -->
+        <div id="targetBlock" style="margin-bottom:8px">
+          <div class="target-row">
+            <span class="target-label" id="targetLabel">Obiettivo 16:8</span>
+            <span class="target-pct" id="targetPct">0%</span>
+          </div>
+          <div class="prog-track" style="margin-top:0">
+            <div class="prog-fill" id="tFill" style="width:0%;background:var(--info)"></div>
+          </div>
+        </div>
+        <!-- Phase badge -->
         <div class="phase-badge">
           <div class="phase-dot" id="pDot"></div>
           <div><div class="phase-name" id="pName">—</div><div class="phase-desc" id="pDesc">—</div></div>
         </div>
+        <!-- General progress -->
         <div class="prog-track"><div class="prog-fill" id="pFill" style="width:0%"></div></div>
         <div class="prog-labels"><span>0h</span><span>8h</span><span>16h</span><span>24h</span><span>36h</span><span>48h</span></div>
       </div>
+      <!-- Phase timeline -->
       <div class="card"><div id="phaseTl"></div></div>
+      <!-- Actions -->
       <div style="display:flex;gap:8px;margin-bottom:6px">
         <button class="btn-danger" onclick="endNow()" style="flex:1"><i class="ti ti-square-check" style="vertical-align:-2px;margin-right:4px"></i>Termina ora</button>
         <button class="btn-sm" onclick="cancelFast()" style="min-width:44px" aria-label="Annulla"><i class="ti ti-trash" style="vertical-align:-2px"></i></button>
@@ -184,15 +298,15 @@
     </div>
   </div>
 
-  <!-- ACQUA -->
+  <!-- ═══════════════ TAB ACQUA ═══════════════ -->
   <div class="section" id="tab-acqua">
     <div class="card">
       <h2>Acqua oggi</h2>
       <div style="text-align:center;margin-bottom:4px">
-        <span style="font-size:42px;font-weight:300;color:var(--info);font-variant-numeric:tabular-nums" id="cupCount">0</span>
-        <span style="font-size:14px;color:var(--text-secondary)"> bic.</span>
+        <span style="font-size:48px;font-weight:300;color:var(--info);font-variant-numeric:tabular-nums" id="cupCount">0</span>
+        <span style="font-size:15px;color:var(--text-secondary)"> bic.</span>
       </div>
-      <div style="font-size:12px;color:var(--text-secondary);text-align:center;margin-bottom:10px" id="cupSub">0 ml</div>
+      <div style="font-size:13px;color:var(--text-secondary);text-align:center;margin-bottom:10px" id="cupSub">0 ml</div>
       <div class="water-prog-track"><div class="water-prog-fill" id="wProgFill" style="width:0%"></div></div>
       <div class="cups-grid" id="cupsGrid"></div>
       <div class="water-goal-row">
@@ -205,13 +319,80 @@
       </div>
     </div>
     <div class="card">
-      <h2>Ultimi 7 giorni</h2>
+      <h2>Ultimi 14 giorni</h2>
       <div id="waterHist"></div>
     </div>
   </div>
 
-  <!-- REGISTRA -->
-  <div class="section" id="tab-registra">
+  <!-- ═══════════════ TAB DIARIO ═══════════════ -->
+  <div class="section" id="tab-diario">
+    <div class="card">
+      <h2>Come stai oggi?</h2>
+      <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px">Valuta il tuo benessere — i dati verranno correlati ai tuoi digiuni.</p>
+
+      <div style="margin-bottom:12px">
+        <div class="form-lbl">Energia ⚡</div>
+        <div class="stars-row" id="starsEnergia"></div>
+      </div>
+      <div style="margin-bottom:12px">
+        <div class="form-lbl">Fame 🍽</div>
+        <div class="stars-row" id="starsFame"></div>
+      </div>
+      <div style="margin-bottom:12px">
+        <div class="form-lbl">Umore 😊</div>
+        <div class="stars-row" id="starsUmore"></div>
+      </div>
+      <div style="margin-bottom:12px">
+        <div class="form-lbl">Note (opzionale)</div>
+        <textarea class="dt-inp" id="diarioNote" placeholder="Come ti senti? Hai avuto effetti particolari?"></textarea>
+      </div>
+      <button class="btn-primary" onclick="saveDiary()"><i class="ti ti-device-floppy" style="vertical-align:-2px;margin-right:4px"></i>Salva diario</button>
+    </div>
+    <div class="card">
+      <h2>Ultimi 7 giorni</h2>
+      <div id="diaryList"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ TAB PESO ═══════════════ -->
+  <div class="section" id="tab-peso">
+    <div class="card">
+      <h2>Registra peso</h2>
+      <div class="form-row" style="margin-bottom:0">
+        <div class="inp-wrap">
+          <i class="ti ti-calendar"></i>
+          <input type="date" class="dt-inp" id="weightDate">
+        </div>
+        <div class="inp-wrap">
+          <i class="ti ti-scale"></i>
+          <input type="number" class="dt-inp" id="weightVal" placeholder="es. 73.5" step="0.1" min="30" max="300" style="padding-left:31px">
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn-primary" onclick="saveWeight()" style="flex:1">Salva peso</button>
+        <button class="btn-sm" onclick="setWeightNow()"><i class="ti ti-current-location" style="vertical-align:-2px"></i></button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Andamento peso</h2>
+      <div style="position:relative;height:180px;margin-bottom:8px">
+        <canvas id="weightChart" role="img" aria-label="Grafico andamento peso corporeo"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Storico</h2>
+      <div id="weightList"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ TAB STORICO ═══════════════ -->
+  <div class="section" id="tab-storico">
+    <!-- Protocol selector -->
+    <div class="card">
+      <h2>Protocollo digiuno</h2>
+      <div class="protocol-grid" id="protocolGrid"></div>
+    </div>
+    <!-- New fast -->
     <div class="card">
       <h2>Nuovo digiuno</h2>
       <div class="now-row"><button class="btn-sm" onclick="setNow()"><i class="ti ti-current-location" style="vertical-align:-2px;margin-right:3px"></i>Usa ora</button></div>
@@ -220,100 +401,160 @@
         <div class="inp-wrap"><i class="ti ti-calendar"></i><input type="date" class="dt-inp" id="sDate"></div>
         <div class="inp-wrap"><i class="ti ti-clock"></i><input type="time" class="dt-inp" id="sTime"></div>
       </div>
-      <label class="form-lbl">Fine digiuno <span style="font-weight:400;color:var(--text-tertiary)">(vuoto = attivo)</span></label>
+      <label class="form-lbl">Fine digiuno <span style="font-weight:400;color:var(--text-tertiary)">(vuoto = attivo ora)</span></label>
       <div class="form-row">
         <div class="inp-wrap"><i class="ti ti-calendar"></i><input type="date" class="dt-inp" id="eDate"></div>
         <div class="inp-wrap"><i class="ti ti-clock"></i><input type="time" class="dt-inp" id="eTime"></div>
       </div>
+      <label class="form-lbl">Note</label>
+      <div style="margin-bottom:10px"><textarea class="dt-inp" id="fastNote" placeholder="Come è andato?"></textarea></div>
       <button class="btn-primary" onclick="saveFast()"><i class="ti ti-device-floppy" style="vertical-align:-2px;margin-right:4px"></i>Salva digiuno</button>
     </div>
-  </div>
-
-  <!-- STORICO -->
-  <div class="section" id="tab-storico">
+    <!-- Stats -->
     <div class="stats-row" id="statsRow"></div>
+    <!-- Streak -->
+    <div class="card" id="streakCard" style="display:none">
+      <h2>Streak ultimi 7 giorni</h2>
+      <div class="streak-bar" id="streakBar"></div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-tertiary);margin-top:4px" id="streakLabels"></div>
+    </div>
+    <!-- Chart -->
     <div class="chart-wrap">
-      <div class="chart-hdr"><h2>Storico digiuni</h2><span style="font-size:10px;color:var(--text-tertiary)">ore</span></div>
+      <div class="chart-hdr"><h2>Storico digiuni</h2><span style="font-size:11px;color:var(--text-tertiary)">ore</span></div>
       <div class="chart-scroll"><canvas id="fastChart" role="img" aria-label="Grafico storico digiuni in ore"></canvas></div>
       <div class="legend">
-        <div class="leg-i"><div class="leg-sq" style="background:#178DD8"></div>Durata (ore)</div>
-        <div class="leg-i"><div class="leg-sq" style="background:#4CAF50"></div>Acqua (bicchieri)</div>
+        <div class="leg-i"><div class="leg-sq" style="background:#178DD8"></div>Ore digiuno</div>
+        <div class="leg-i"><div class="leg-sq" style="background:#4CAF50"></div>Acqua (bic.)</div>
       </div>
     </div>
+    <!-- History list -->
     <div id="histList"></div>
   </div>
 
-  <!-- GUIDA -->
+  <!-- ═══════════════ TAB GUIDA ═══════════════ -->
   <div class="section" id="tab-guida">
     <div class="card" style="margin-bottom:10px">
       <h2>Le fasi del digiuno</h2>
-      <p style="font-size:12px;color:var(--text-secondary);line-height:1.5">Tocca una fase per scoprire cosa succede al tuo corpo.</p>
+      <p style="font-size:13px;color:var(--text-secondary);line-height:1.5">Tocca una fase per scoprire cosa succede al tuo corpo durante il digiuno.</p>
     </div>
     <div id="phaseCards"></div>
+    <!-- Tips -->
+    <div class="card" style="margin-top:4px">
+      <h2>Consigli pratici</h2>
+      <div id="tipsList"></div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- SHARE MODAL -->
+<div class="modal-overlay" id="shareModal" onclick="closeShare(event)">
+  <div class="modal" style="position:relative">
+    <button class="modal-close" onclick="closeShare()" aria-label="Chiudi"><i class="ti ti-x"></i></button>
+    <h3><i class="ti ti-share" style="vertical-align:-2px;margin-right:6px;color:var(--info)"></i>Condividi l'app</h3>
+    <p>Manda questo link ai tuoi amici — possono installare l'app gratuitamente sul loro telefono!</p>
+    <div class="link-box" id="shareLink">—</div>
+    <div class="modal-btns">
+      <button class="btn-primary" onclick="copyLink()"><i class="ti ti-copy" style="vertical-align:-2px;margin-right:5px"></i>Copia link</button>
+      <button class="btn-primary" style="background:var(--success)" onclick="shareNative()"><i class="ti ti-share" style="vertical-align:-2px;margin-right:5px"></i>Condividi via...</button>
+      <button class="btn-sm" onclick="closeShare()" style="text-align:center">Annulla</button>
+    </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
+/* ═══════════════ DATA ═══════════════ */
 const PHASES=[
   {id:'anabolica',name:'Fase Anabolica',color:'#4CAF50',hours:[0,3],tags:['Insulina alta','Sintesi proteica','Glicogeno'],
-   body:`<p>Dopo il pasto, l'insulina è alta e il corpo è in modalità "costruzione". Carboidrati e proteine vengono assorbiti dall'intestino e trasportati alle cellule.</p><p>Il glucosio in eccesso viene convertito in glicogeno nel fegato e nei muscoli (circa 400-500g di riserva totale). Gli aminoacidi stimolano la sintesi proteica muscolare (MPS).</p><p>Il corpo non brucia grassi in questa fase: l'insulina alta inibisce la lipolisi. È la fase ideale per chi si allena: il post-workout con pasto proteico massimizza la costruzione muscolare.</p>`},
+   body:`<p>Dopo il pasto, l'insulina è alta e il corpo è in modalità "costruzione". Carboidrati e proteine vengono assorbiti dall'intestino e trasportati alle cellule.</p><p>Il glucosio in eccesso viene convertito in glicogeno nel fegato e nei muscoli (circa 400-500g di riserva totale). Gli aminoacidi stimolano la sintesi proteica muscolare (MPS).</p><p>Il corpo non brucia grassi in questa fase: l'insulina alta inibisce la lipolisi. È la fase ideale per chi si allena subito dopo aver mangiato.</p>`},
   {id:'catabolica',name:'Fase Catabolica',color:'#FF9800',hours:[3,8],tags:['Glicogeno attivo','Insulina cala','Energia stabile'],
-   body:`<p>L'insulina inizia a scendere e il corpo passa a bruciare le riserve di glicogeno epatico e muscolare per mantenere la glicemia stabile. Il metabolismo è ancora prevalentemente basato sul glucosio.</p><p>Verso le 6-8 ore il glicogeno epatico inizia ad esaurirsi. Il fegato aumenta la gluconeogenesi (produzione di glucosio da aminoacidi e glicerolo).</p><p>L'ormone glucagone sale, stimolando il fegato a rilasciare glucosio. Si avverte una leggera sensazione di fame ma i livelli di energia restano buoni.</p>`},
+   body:`<p>L'insulina inizia a scendere e il corpo passa a bruciare le riserve di glicogeno epatico e muscolare per mantenere la glicemia stabile.</p><p>Verso le 6-8 ore il glicogeno epatico inizia ad esaurirsi. Il fegato aumenta la gluconeogenesi (produzione di glucosio da aminoacidi e glicerolo).</p><p>L'ormone glucagone sale, stimolando il fegato a rilasciare glucosio. Si avverte una leggera sensazione di fame ma i livelli di energia restano buoni.</p>`},
   {id:'bruciagrassi',name:'Brucia Grassi',color:'#F44336',hours:[8,16],tags:['Lipolisi attiva','Chetoni in aumento','Fame gestibile'],
-   body:`<p>Con il glicogeno quasi esaurito, l'insulina molto bassa sblocca la lipolisi: i trigliceridi del tessuto adiposo vengono scissi in glicerolo e acidi grassi liberi (FFA).</p><p>Gli FFA arrivano al fegato dove subiscono beta-ossidazione producendo acetil-CoA. Questo processo genera i corpi chetonici: beta-idrossibutirrato, acetoacetato e acetone.</p><p>Intorno alle 12-14 ore molti riferiscono maggiore chiarezza mentale e calo della fame — effetto dei chetoni che alimentano il cervello.</p>`},
+   body:`<p>Con il glicogeno quasi esaurito, l'insulina molto bassa sblocca la lipolisi: i trigliceridi del tessuto adiposo vengono scissi in glicerolo e acidi grassi liberi (FFA).</p><p>Gli FFA arrivano al fegato dove subiscono beta-ossidazione. Questo processo genera i corpi chetonici: beta-idrossibutirrato, acetoacetato e acetone.</p><p>Intorno alle 12-14 ore molti riferiscono maggiore chiarezza mentale e calo della fame — effetto dei chetoni che alimentano il cervello. Il corpo usa grassi come carburante primario.</p>`},
   {id:'chetosi',name:'Chetosi Leggera',color:'#9C27B0',hours:[16,24],tags:['Chetoni elevati','Chiarezza mentale','GH in aumento'],
-   body:`<p>La chetosi diventa misurabile (>0.5 mmol/L ematici). Il cervello inizia a usare i chetoni come fonte energetica principale (fino al 75% del fabbisogno).</p><p>L'ormone della crescita (GH) inizia a salire significativamente — fino a 5x i livelli basali — proteggendo la massa muscolare dalla degradazione.</p><p>I benefici includono riduzione dell'infiammazione sistemica, miglioramento della sensibilità insulinica e riduzione dei trigliceridi. Molti praticanti del 16:8 raggiungono questa fase ogni giorno.</p>`},
+   body:`<p>La chetosi diventa misurabile (>0.5 mmol/L ematici). Il cervello inizia a usare i chetoni come fonte energetica principale (fino al 75% del fabbisogno).</p><p>L'ormone della crescita (GH) inizia a salire significativamente — fino a 5x i livelli basali — proteggendo la massa muscolare dalla degradazione.</p><p>I benefici includono riduzione dell'infiammazione sistemica, miglioramento della sensibilità insulinica e riduzione dei trigliceridi. Chi pratica il 16:8 raggiunge questa fase ogni giorno.</p>`},
   {id:'autofagia',name:'Autofagia',color:'#2196F3',hours:[24,36],tags:['Riciclo cellulare','Anti-aging','Pulizia proteine'],
-   body:`<p>L'autofagia è il processo con cui le cellule riciclano componenti danneggiati o mal ripiegati. È intensamente attiva a digiuno prolungato.</p><p>I lisosomi inglobano mitocondri difettosi, proteine aggregate e organelli danneggiati, digerendoli per recuperare aminoacidi e lipidi. Fondamentale nella prevenzione di malattie neurodegenerative come Alzheimer e Parkinson.</p><p>Il premio Nobel per la medicina 2016 è stato assegnato a Yoshinori Ohsumi per le sue scoperte sui meccanismi dell'autofagia. Raggiungere questa fase richiede tipicamente 24-36 ore di digiuno.</p>`},
+   body:`<p>L'autofagia è il processo con cui le cellule riciclano componenti danneggiati. È intensamente attiva a digiuno prolungato.</p><p>I lisosomi inglobano mitocondri difettosi, proteine aggregate e organelli danneggiati, digerendoli per recuperare aminoacidi e lipidi. Fondamentale nella prevenzione di malattie neurodegenerative.</p><p>Il premio Nobel per la medicina 2016 è stato assegnato a Yoshinori Ohsumi per le sue scoperte sull'autofagia. Raggiungere questa fase richiede tipicamente 24-36 ore di digiuno.</p>`},
   {id:'gh',name:'Picco Ormone Crescita',color:'#00BCD4',hours:[36,48],tags:['GH +2000%','Massa muscolare','Anti-aging'],
-   body:`<p>Dopo 36-48 ore di digiuno, i livelli di GH (somatotropina) possono aumentare del 1.500-2.000% rispetto ai livelli basali. Questo è uno dei meccanismi attraverso cui il digiuno prolungato preserva e può aumentare la massa muscolare.</p><p>Il GH stimola la lipolisi, favorisce la sintesi proteica, migliora la densità ossea e ha effetti anti-aging dimostrati.</p><p>Si osserva anche un aumento della norepinefrina del 40%, che aumenta la vigilanza mentale e il tasso metabolico basale.</p>`},
+   body:`<p>Dopo 36-48 ore, i livelli di GH possono aumentare del 1.500-2.000% rispetto ai livelli basali. Questo è uno dei meccanismi attraverso cui il digiuno prolungato preserva la massa muscolare.</p><p>Il GH stimola la lipolisi, favorisce la sintesi proteica, migliora la densità ossea e ha effetti anti-aging dimostrati. Si osserva anche un aumento della norepinefrina del 40%.</p><p>Molti praticanti riferiscono una sensazione di energia intensa e focus acuto in questa fase.</p>`},
   {id:'rigenera',name:'Rigenerazione Cellulare',color:'#FF5722',hours:[48,72],tags:['Reset immunitario','Stem cells','Digiuno avanzato'],
-   body:`<p>Oltre le 48-72 ore si attivano meccanismi di rigenerazione profondi. Gli studi mostrano un reset parziale del sistema immunitario: le cellule vecchie o danneggiate vengono eliminate e sostituite da nuove generate dalle cellule staminali.</p><p>Il prof. Valter Longo (USC) ha dimostrato che cicli periodici di digiuno prolungato possono rigenerare le cellule beta del pancreas e riequilibrare il sistema immunitario.</p><p><strong>Attenzione:</strong> i digiuni oltre 24-48 ore devono essere effettuati solo con supervisione medica. Non adatti a diabetici, donne in gravidanza, persone sottopeso o con disturbi alimentari.</p>`}
+   body:`<p>Oltre le 48-72 ore si attivano meccanismi di rigenerazione profondi. Gli studi mostrano un reset parziale del sistema immunitario con eliminazione e sostituzione di cellule danneggiate.</p><p>Il prof. Valter Longo (USC) ha dimostrato che cicli periodici di digiuno prolungato possono rigenerare le cellule beta del pancreas e riequilibrare il sistema immunitario.</p><p><strong>⚠️ Attenzione:</strong> i digiuni oltre 24-48 ore devono essere effettuati solo con supervisione medica. Non adatti a diabetici, donne in gravidanza, persone sottopeso o con disturbi alimentari.</p>`}
 ];
 
+const PROTOCOLS=[
+  {id:'16_8',name:'16:8',target:16,desc:'Leangains'},
+  {id:'18_6',name:'18:6',target:18,desc:'Avanzato'},
+  {id:'20_4',name:'20:4',target:20,desc:'Warrior'},
+  {id:'24',name:'24h',target:24,desc:'OMAD'},
+  {id:'36',name:'36h',target:36,desc:'Alternate Day'},
+  {id:'custom',name:'Libero',target:0,desc:'Nessun target'},
+];
+
+const TIPS=[
+  {icon:'ti-droplet',text:'Bevi almeno 2-3 litri d\'acqua al giorno durante il digiuno. L\'acqua aiuta a gestire la fame e mantiene l\'energia.'},
+  {icon:'ti-coffee',text:'Caffè e tè non zuccherati sono consentiti e possono aiutare a gestire la fame nelle prime ore.'},
+  {icon:'ti-zzz',text:'Inizia il digiuno la sera dopo cena: dormirai buona parte del tempo di digiuno senza sentire la fame.'},
+  {icon:'ti-run',text:'L\'allenamento a digiuno (nelle ultime ore) può aumentare la lipolisi, ma attenzione all\'intensità.'},
+  {icon:'ti-salt',text:'Gli elettroliti (sodio, potassio, magnesio) sono importanti nei digiuni prolungati. Un pizzico di sale nell\'acqua può aiutare.'},
+  {icon:'ti-mood-smile',text:'La fame arriva a ondate e passa. Se senti fame, aspetta 20 minuti: spesso passa da sola.'},
+];
+
+/* ═══════════════ STATE ═══════════════ */
 const pad=n=>String(n).padStart(2,'0');
 let fasts=JSON.parse(localStorage.getItem('ij_fasts')||'[]');
 let activeFast=JSON.parse(localStorage.getItem('ij_active')||'null');
 let waterData=JSON.parse(localStorage.getItem('ij_water')||'{}');
 let waterGoal=parseInt(localStorage.getItem('ij_wgoal')||'2000');
-let timerInt=null,chartInst=null;
-const ML_PER_CUP=250,MAX_CUPS=12;
+let weightData=JSON.parse(localStorage.getItem('ij_weight')||'[]');
+let diaryData=JSON.parse(localStorage.getItem('ij_diary')||'[]');
+let protocol=localStorage.getItem('ij_protocol')||'16_8';
+let diaryRatings={energia:0,fame:0,umore:0};
+let timerInt=null,chartInst=null,weightChartInst=null;
+const ML=250,MAX_CUPS=12;
 
+/* ═══════════════ HELPERS ═══════════════ */
 function todayKey(){const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
 function getTodayCups(){return waterData[todayKey()]||0}
+function getCurPhase(h){for(let i=PHASES.length-1;i>=0;i--){if(h>=PHASES[i].hours[0])return PHASES[i]}return PHASES[0]}
+function getProtocol(){return PROTOCOLS.find(p=>p.id===protocol)||PROTOCOLS[0]}
+function fmtDt(d){return pad(d.getDate())+'/'+pad(d.getMonth()+1)+' '+pad(d.getHours())+':'+pad(d.getMinutes())}
+function fmtDate(d){return pad(d.getDate())+'/'+pad(d.getMonth()+1)+'/'+d.getFullYear()}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
 
+/* ═══════════════ FAST ═══════════════ */
 function saveFast(){
   const sd=document.getElementById('sDate').value,st=document.getElementById('sTime').value;
   const ed=document.getElementById('eDate').value,et=document.getElementById('eTime').value;
+  const note=document.getElementById('fastNote').value.trim();
   if(!sd||!st){showToast('Inserisci data e ora di inizio');return}
   const start=new Date(sd+'T'+st);
   const end=(ed&&et)?new Date(ed+'T'+et):null;
   if(end&&end<=start){showToast('La fine deve essere dopo l\'inizio');return}
   if(!end){
-    activeFast={start:start.toISOString(),id:Date.now()};
+    activeFast={start:start.toISOString(),id:Date.now(),note};
     localStorage.setItem('ij_active',JSON.stringify(activeFast));
-    showToast('Digiuno avviato!');sw('fase');
+    showToast('Digiuno avviato! 💪');sw('fase');
   } else {
     const dur=(end-start)/3600000;
-    fasts.unshift({id:Date.now(),start:start.toISOString(),end:end.toISOString(),durationH:dur,cups:getTodayCups()});
+    fasts.unshift({id:Date.now(),start:start.toISOString(),end:end.toISOString(),durationH:dur,cups:getTodayCups(),note});
     localStorage.setItem('ij_fasts',JSON.stringify(fasts));
     showToast('Salvato: '+dur.toFixed(1)+'h');
   }
-  clearInputs();
+  clearFastInputs();
 }
 
 function endNow(){
   if(!activeFast)return;
-  const start=new Date(activeFast.start),end=new Date();
-  const dur=(end-start)/3600000;
-  fasts.unshift({id:activeFast.id,start:activeFast.start,end:end.toISOString(),durationH:dur,cups:getTodayCups()});
+  const start=new Date(activeFast.start),end=new Date(),dur=(end-start)/3600000;
+  fasts.unshift({id:activeFast.id,start:activeFast.start,end:end.toISOString(),durationH:dur,cups:getTodayCups(),note:activeFast.note||''});
   localStorage.setItem('ij_fasts',JSON.stringify(fasts));
   activeFast=null;localStorage.removeItem('ij_active');
   clearInterval(timerInt);
-  showToast('Completato: '+dur.toFixed(1)+'h');
-  renderActiveFast();renderHistory();
+  const ph=getCurPhase(dur);
+  showToast('Completato: '+dur.toFixed(1)+'h — '+ph.name+' ✓');
+  renderActiveFast();
 }
 
 function cancelFast(){
@@ -327,8 +568,8 @@ function setNow(){
   document.getElementById('sDate').value=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
   document.getElementById('sTime').value=pad(now.getHours())+':'+pad(now.getMinutes());
 }
-function clearInputs(){['sDate','sTime','eDate','eTime'].forEach(id=>document.getElementById(id).value='')}
-function getCurPhase(h){for(let i=PHASES.length-1;i>=0;i--){if(h>=PHASES[i].hours[0])return PHASES[i]}return PHASES[0]}
+
+function clearFastInputs(){['sDate','sTime','eDate','eTime'].forEach(id=>document.getElementById(id).value='');document.getElementById('fastNote').value=''}
 
 function renderActiveFast(){
   const noFast=document.getElementById('no-fast'),ui=document.getElementById('fast-ui');
@@ -343,33 +584,54 @@ function tickTimer(){
   const h=Math.floor(diff/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
   document.getElementById('timerBig').textContent=pad(h)+':'+pad(m)+':'+pad(s);
   document.getElementById('timerSub').textContent='iniziato il '+fmtDt(start);
-  const hrs=diff/3600000,phase=getCurPhase(hrs);
+  const hrs=diff/3600000,phase=getCurPhase(hrs),proto=getProtocol();
+  // target progress
+  if(proto.target>0){
+    const tPct=Math.min(100,Math.round(hrs/proto.target*100));
+    document.getElementById('targetLabel').textContent='Obiettivo '+proto.name+' ('+proto.target+'h)';
+    document.getElementById('targetPct').textContent=tPct+'%';
+    document.getElementById('tFill').style.width=tPct+'%';
+    document.getElementById('tFill').style.background=tPct>=100?'var(--success)':phase.color;
+    document.getElementById('targetBlock').style.display='';
+  } else {
+    document.getElementById('targetBlock').style.display='none';
+  }
   document.getElementById('pDot').style.background=phase.color;
   document.getElementById('pName').textContent=phase.name;
   document.getElementById('pDesc').textContent=phase.tags.join(' · ');
   document.getElementById('pFill').style.width=Math.min(100,(hrs/48)*100)+'%';
   document.getElementById('pFill').style.background=phase.color;
+  // timeline
   const tl=document.getElementById('phaseTl');
-  tl.innerHTML='<div style="font-size:10px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Fasi metaboliche</div>';
+  tl.innerHTML='<div class="section-title">Fasi metaboliche</div>';
   PHASES.forEach(ph=>{
     const reached=hrs>=ph.hours[0],active=hrs>=ph.hours[0]&&hrs<ph.hours[1];
     const row=document.createElement('div');row.className='ph-row'+(reached?'':' upcoming');
     row.innerHTML=`<div class="ph-dot" style="background:${reached?ph.color:'var(--border-md)'}"></div>
-    <div style="flex:1"><div class="ph-name">${ph.name}${active?' <span style="color:var(--info);font-size:10px">← ora</span>':''}</div><div class="ph-hrs">${ph.hours[0]}h–${ph.hours[1]}h</div></div>
-    <div>${reached?'<i class="ti ti-check" style="color:var(--success);font-size:15px"></i>':'<span style="font-size:10px;color:var(--text-tertiary)">'+ph.hours[0]+'h</span>'}</div>`;
+    <div style="flex:1"><div class="ph-name">${ph.name}${active?' <span style="color:var(--info);font-size:11px;font-weight:500">← ora</span>':''}</div><div class="ph-hrs">${ph.hours[0]}h–${ph.hours[1]}h</div></div>
+    <div>${reached?'<i class="ti ti-check" style="color:var(--success);font-size:16px"></i>':'<span style="font-size:11px;color:var(--text-tertiary)">'+ph.hours[0]+'h</span>'}</div>`;
     tl.appendChild(row);
   });
 }
 
-function fmtDt(d){return pad(d.getDate())+'/'+pad(d.getMonth()+1)+' '+pad(d.getHours())+':'+pad(d.getMinutes())}
-function fmtDate(d){return pad(d.getDate())+'/'+pad(d.getMonth()+1)+'/'+d.getFullYear()}
+/* ═══════════════ PROTOCOL ═══════════════ */
+function renderProtocols(){
+  const grid=document.getElementById('protocolGrid');
+  grid.innerHTML=PROTOCOLS.map(p=>`
+    <button class="proto-btn${p.id===protocol?' active':''}" onclick="setProtocol('${p.id}')">
+      <div class="proto-name">${p.name}</div>
+      <div class="proto-desc">${p.desc}</div>
+    </button>`).join('');
+}
+function setProtocol(id){protocol=id;localStorage.setItem('ij_protocol',id);renderProtocols();if(activeFast)tickTimer();showToast('Protocollo: '+getProtocol().name)}
 
+/* ═══════════════ WATER ═══════════════ */
 function addCup(){const k=todayKey();const cur=waterData[k]||0;if(cur>=MAX_CUPS){showToast('Massimo '+MAX_CUPS+' bicchieri');return}waterData[k]=cur+1;localStorage.setItem('ij_water',JSON.stringify(waterData));renderWater()}
 function removeCup(){const k=todayKey();if(!waterData[k])return;waterData[k]=Math.max(0,waterData[k]-1);localStorage.setItem('ij_water',JSON.stringify(waterData));renderWater()}
 function updateGoal(){waterGoal=parseInt(document.getElementById('goalInput').value)||2000;localStorage.setItem('ij_wgoal',waterGoal);renderWater()}
 
 function renderWater(){
-  const cups=getTodayCups(),ml=cups*ML_PER_CUP,pct=Math.min(100,Math.round(ml/waterGoal*100));
+  const cups=getTodayCups(),ml=cups*ML,pct=Math.min(100,Math.round(ml/waterGoal*100));
   document.getElementById('cupCount').textContent=cups;
   document.getElementById('cupSub').textContent=ml+' ml di '+waterGoal+' ml — '+pct+'%';
   document.getElementById('wProgFill').style.width=pct+'%';
@@ -378,35 +640,172 @@ function renderWater(){
   for(let i=0;i<MAX_CUPS;i++){
     const btn=document.createElement('button');btn.className='cup-btn'+(i<cups?' filled':'');
     btn.innerHTML='<i class="ti ti-glass-full"></i>';btn.onclick=()=>i<cups?removeCup():addCup();
-    btn.title=i<cups?'Rimuovi':'Aggiungi';grid.appendChild(btn);
+    grid.appendChild(btn);
   }
   const hist=document.getElementById('waterHist');const days=[];const now=new Date();
-  for(let i=6;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);const k=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());days.push({label:pad(d.getDate())+'/'+pad(d.getMonth()+1),k,cups:waterData[k]||0})}
-  hist.innerHTML=days.map(day=>{const p=Math.min(100,Math.round(day.cups*ML_PER_CUP/waterGoal*100));
-    return`<div class="water-hist-row"><span style="width:38px;color:var(--text-secondary);flex-shrink:0">${day.label}</span><div style="flex:1;height:5px;background:var(--bg-secondary);border-radius:999px;overflow:hidden"><div style="height:100%;width:${p}%;background:var(--info);border-radius:999px"></div></div><span style="width:28px;text-align:right;font-weight:500;color:var(--text-primary)">${day.cups}</span><span style="width:30px;color:var(--text-tertiary);text-align:right">bic</span></div>`;
+  for(let i=13;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);const k=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());days.push({label:pad(d.getDate())+'/'+pad(d.getMonth()+1),k,cups:waterData[k]||0})}
+  hist.innerHTML=days.map(day=>{const p=Math.min(100,Math.round(day.cups*ML/waterGoal*100));const ok=p>=100;
+    return`<div class="water-hist-row">
+      <span style="width:42px;color:var(--text-secondary);font-size:11px;flex-shrink:0">${day.label}</span>
+      <div style="flex:1;height:5px;background:var(--bg-secondary);border-radius:999px;overflow:hidden"><div style="height:100%;width:${p}%;background:${ok?'var(--success)':'var(--info)'};border-radius:999px"></div></div>
+      <span style="width:32px;text-align:right;font-weight:500;color:var(--text-primary);font-size:12px">${day.cups}</span>
+      <span style="width:14px;text-align:center;font-size:13px">${ok?'✓':''}</span>
+    </div>`;
   }).join('');
 }
 
+/* ═══════════════ DIARY ═══════════════ */
+function renderStars(id,key,max=5){
+  const container=document.getElementById(id);container.innerHTML='';
+  const emojis=['😞','😐','😊','😄','🤩'];
+  for(let i=1;i<=max;i++){
+    const btn=document.createElement('button');btn.className='star-btn'+(diaryRatings[key]>=i?' active':'');
+    btn.textContent=emojis[i-1];
+    btn.onclick=()=>{diaryRatings[key]=i;renderStars(id,key,max)};
+    container.appendChild(btn);
+  }
+}
+
+function saveDiary(){
+  const note=document.getElementById('diarioNote').value.trim();
+  const entry={date:todayKey(),energia:diaryRatings.energia,fame:diaryRatings.fame,umore:diaryRatings.umore,note};
+  const idx=diaryData.findIndex(d=>d.date===todayKey());
+  if(idx>=0)diaryData[idx]=entry;else diaryData.unshift(entry);
+  localStorage.setItem('ij_diary',JSON.stringify(diaryData));
+  showToast('Diario salvato!');
+  diaryRatings={energia:0,fame:0,umore:0};
+  renderStars('starsEnergia','energia');renderStars('starsFame','fame');renderStars('starsUmore','umore');
+  document.getElementById('diarioNote').value='';
+  renderDiaryList();
+}
+
+function renderDiaryList(){
+  const list=document.getElementById('diaryList');
+  const recent=diaryData.slice(0,7);
+  if(!recent.length){list.innerHTML='<div class="empty" style="padding:16px"><i class="ti ti-mood-smile"></i>Nessuna voce ancora.</div>';return}
+  const emojis=['😞','😐','😊','😄','🤩'];
+  list.innerHTML=recent.map(e=>`
+    <div class="weight-entry">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:500;color:var(--text-primary)">${e.date}</div>
+        <div style="font-size:12px;color:var(--text-secondary);margin-top:2px">
+          ⚡${emojis[(e.energia||1)-1]} 🍽${emojis[(e.fame||1)-1]} 😊${emojis[(e.umore||1)-1]}
+          ${e.note?'<span style="margin-left:6px;font-style:italic">'+e.note.substring(0,40)+(e.note.length>40?'...':'')+'</span>':''}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+/* ═══════════════ WEIGHT ═══════════════ */
+function setWeightNow(){const now=new Date();document.getElementById('weightDate').value=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())}
+
+function saveWeight(){
+  const d=document.getElementById('weightDate').value;
+  const v=parseFloat(document.getElementById('weightVal').value);
+  if(!d||isNaN(v)||v<30||v>300){showToast('Inserisci una data e un peso valido');return}
+  const idx=weightData.findIndex(w=>w.date===d);
+  if(idx>=0)weightData[idx].kg=v;else weightData.push({date:d,kg:v});
+  weightData.sort((a,b)=>a.date.localeCompare(b.date));
+  localStorage.setItem('ij_weight',JSON.stringify(weightData));
+  showToast('Peso salvato: '+v+' kg');
+  document.getElementById('weightVal').value='';
+  renderWeight();
+}
+
+function renderWeight(){
+  const list=document.getElementById('weightList');
+  if(!weightData.length){list.innerHTML='<div class="empty" style="padding:16px"><i class="ti ti-scale"></i>Nessun peso registrato.</div>';renderWeightChart([]);return}
+  const recent=[...weightData].reverse().slice(0,20);
+  list.innerHTML=recent.map((w,i)=>{
+    const prev=recent[i+1];const diff=prev?w.kg-prev.kg:null;
+    const diffStr=diff!==null?(diff>0?'<span style="color:var(--danger)">▲'+Math.abs(diff).toFixed(1)+'</span>':'<span style="color:var(--success)">▼'+Math.abs(diff).toFixed(1)+'</span>'):'';
+    return`<div class="weight-entry">
+      <div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text-primary)">${w.date}</div></div>
+      <div style="font-size:16px;font-weight:600;color:var(--text-primary)">${w.kg} kg</div>
+      <div style="font-size:12px;min-width:36px;text-align:right">${diffStr}</div>
+      <button class="hi-del" onclick="deleteWeight('${w.date}')" aria-label="Elimina"><i class="ti ti-trash"></i></button>
+    </div>`;
+  }).join('');
+  renderWeightChart(weightData);
+}
+
+function deleteWeight(date){weightData=weightData.filter(w=>w.date!==date);localStorage.setItem('ij_weight',JSON.stringify(weightData));renderWeight()}
+
+function renderWeightChart(data){
+  const ctx=document.getElementById('weightChart');
+  if(weightChartInst){weightChartInst.destroy();weightChartInst=null}
+  if(data.length<2){ctx.style.display='none';return}
+  ctx.style.display='';
+  const dark=matchMedia('(prefers-color-scheme:dark)').matches;
+  const tc=dark?'#9c9a92':'#73726c',gc=dark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)';
+  const recent=data.slice(-20);
+  weightChartInst=new Chart(ctx,{type:'line',
+    data:{labels:recent.map(w=>{const p=w.date.split('-');return p[2]+'/'+p[1]}),
+      datasets:[{data:recent.map(w=>w.kg),borderColor:'#178DD8',backgroundColor:'rgba(23,141,216,0.08)',borderWidth:2,pointRadius:4,pointBackgroundColor:'#178DD8',fill:true,tension:0.3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{ticks:{color:tc,font:{size:10},maxRotation:45},grid:{color:gc},border:{display:false}},
+    y:{ticks:{color:tc,font:{size:10},callback:v=>v+'kg'},grid:{color:gc},border:{display:false}}}}
+  });
+}
+
+/* ═══════════════ HISTORY ═══════════════ */
 function renderHistory(){
+  renderProtocols();
   const list=document.getElementById('histList'),stats=document.getElementById('statsRow');
-  if(fasts.length===0){list.innerHTML='<div class="empty"><i class="ti ti-history"></i>Nessun digiuno registrato ancora.</div>';stats.innerHTML='';renderChart([]);return}
+  renderStreak();
+  if(!fasts.length){list.innerHTML='<div class="empty"><i class="ti ti-history"></i>Nessun digiuno registrato ancora.<br>Aggiungi il primo qui sopra!</div>';stats.innerHTML='';renderChart([]);return}
   const avg=fasts.reduce((a,f)=>a+f.durationH,0)/fasts.length;
   const best=Math.max(...fasts.map(f=>f.durationH));
-  stats.innerHTML=`<div class="stat-c"><div class="stat-v">${fasts.length}</div><div class="stat-l">Digiuni totali</div></div>
+  const totalH=fasts.reduce((a,f)=>a+f.durationH,0);
+  stats.innerHTML=`
+    <div class="stat-c"><div class="stat-v">${fasts.length}</div><div class="stat-l">Digiuni totali</div></div>
     <div class="stat-c"><div class="stat-v">${avg.toFixed(1)}h</div><div class="stat-l">Media durata</div></div>
     <div class="stat-c"><div class="stat-v">${best.toFixed(1)}h</div><div class="stat-l">Record personale</div></div>
-    <div class="stat-c"><div class="stat-v">${fasts.filter(f=>f.durationH>=16).length}</div><div class="stat-l">Obiettivi ≥16h</div></div>`;
+    <div class="stat-c"><div class="stat-v">${Math.round(totalH)}h</div><div class="stat-l">Ore totali</div></div>`;
   list.innerHTML=fasts.map((f,i)=>{
     const s=new Date(f.start),e=new Date(f.end),ph=getCurPhase(f.durationH);
-    return`<div class="hi-item"><div class="hi-bar" style="background:${ph.color}"></div>
-    <div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--text-primary)">${fmtDate(s)}</div>
-    <div style="font-size:10px;color:var(--text-secondary);margin-top:2px">${fmtDt(s)} → ${fmtDt(e)}</div>
-    <div style="font-size:10px;color:${ph.color};margin-top:2px">${ph.name}</div>
-    ${f.cups?'<div style="font-size:10px;color:var(--info);margin-top:1px"><i class="ti ti-droplet" style="font-size:10px;vertical-align:-1px"></i> '+f.cups+' bicchieri</div>':''}</div>
-    <div style="text-align:right"><div style="font-size:14px;font-weight:500;color:var(--text-primary)">${f.durationH.toFixed(1)}h</div><div style="font-size:10px;color:var(--text-tertiary)">durata</div></div>
-    <button class="hi-del" onclick="delFast(${i})" aria-label="Elimina"><i class="ti ti-trash"></i></button></div>`;
+    const proto=getProtocol();const goalReached=proto.target>0&&f.durationH>=proto.target;
+    return`<div class="hi-item">
+      <div class="hi-bar" style="background:${ph.color}"></div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:13px;font-weight:500;color:var(--text-primary)">${fmtDate(s)}</span>
+          ${goalReached?'<span class="badge badge-success">✓ Obiettivo</span>':''}
+        </div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-top:2px">${fmtDt(s)} → ${fmtDt(e)}</div>
+        <div style="font-size:11px;color:${ph.color};margin-top:2px">${ph.name}</div>
+        ${f.cups?'<div style="font-size:11px;color:var(--info);margin-top:1px"><i class="ti ti-droplet" style="font-size:11px;vertical-align:-1px"></i> '+f.cups+' bicchieri</div>':''}
+        ${f.note?'<div style="font-size:11px;color:var(--text-tertiary);margin-top:2px;font-style:italic">'+f.note.substring(0,60)+'</div>':''}
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-size:15px;font-weight:600;color:var(--text-primary)">${f.durationH.toFixed(1)}h</div>
+        <div style="font-size:10px;color:var(--text-tertiary)">durata</div>
+      </div>
+      <button class="hi-del" onclick="delFast(${i})" aria-label="Elimina"><i class="ti ti-trash"></i></button>
+    </div>`;
   }).join('');
   renderChart(fasts);
+}
+
+function renderStreak(){
+  const card=document.getElementById('streakCard'),bar=document.getElementById('streakBar'),labels=document.getElementById('streakLabels');
+  if(!fasts.length){card.style.display='none';return}
+  card.style.display='';
+  bar.innerHTML='';labels.innerHTML='';
+  const now=new Date();const proto=getProtocol();
+  for(let i=6;i>=0;i--){
+    const d=new Date(now);d.setDate(d.getDate()-i);
+    const dk=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+    const dayFasts=fasts.filter(f=>f.start.startsWith(dk)||f.end?.startsWith(dk));
+    const maxH=dayFasts.length?Math.max(...dayFasts.map(f=>f.durationH)):0;
+    const goalOk=proto.target>0&&maxH>=proto.target;
+    const hasFast=maxH>0;
+    const div=document.createElement('div');
+    div.className='streak-day'+(goalOk?' goal':hasFast?' done':'');
+    div.textContent=hasFast?Math.round(maxH)+'h':'—';
+    bar.appendChild(div);
+    const lb=document.createElement('span');lb.textContent=pad(d.getDate())+'/'+pad(d.getMonth()+1);labels.appendChild(lb);
+  }
 }
 
 function delFast(i){if(!confirm('Eliminare questo digiuno?'))return;fasts.splice(i,1);localStorage.setItem('ij_fasts',JSON.stringify(fasts));renderHistory()}
@@ -414,29 +813,32 @@ function delFast(i){if(!confirm('Eliminare questo digiuno?'))return;fasts.splice
 function renderChart(data){
   const ctx=document.getElementById('fastChart');
   if(chartInst){chartInst.destroy();chartInst=null}
-  if(data.length===0){ctx.width=300;ctx.height=150;return}
-  const sorted=[...data].reverse().slice(-10);
+  if(!data.length){ctx.width=300;ctx.height=150;return}
+  const sorted=[...data].reverse().slice(-12);
   const labels=sorted.map(f=>{const d=new Date(f.start);return pad(d.getDate())+'/'+pad(d.getMonth()+1)});
   const durations=sorted.map(f=>parseFloat(f.durationH.toFixed(1)));
   const cups=sorted.map(f=>f.cups||0);
-  const bw=Math.max(260,sorted.length*36);
-  ctx.width=bw;ctx.height=170;
+  const bw=Math.max(280,sorted.length*36);
+  ctx.width=bw;ctx.height=175;
   const dark=matchMedia('(prefers-color-scheme:dark)').matches;
   const tc=dark?'#9c9a92':'#73726c',gc=dark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)';
+  const proto=getProtocol();
   chartInst=new Chart(ctx,{type:'bar',
     data:{labels,datasets:[
       {label:'Ore',data:durations,backgroundColor:durations.map(d=>getCurPhase(d).color+'BB'),borderColor:durations.map(d=>getCurPhase(d).color),borderWidth:1.5,borderRadius:4,yAxisID:'y',order:1},
-      {label:'Acqua',data:cups,type:'line',borderColor:'#178DD8',backgroundColor:'rgba(23,141,216,0.08)',borderWidth:2,pointRadius:3,pointBackgroundColor:'#178DD8',fill:true,yAxisID:'y2',order:0}
+      {label:'Acqua',data:cups,type:'line',borderColor:'#4CAF50',backgroundColor:'rgba(76,175,80,0.08)',borderWidth:2,pointRadius:3,pointBackgroundColor:'#4CAF50',fill:true,yAxisID:'y2',order:0}
     ]},
-    options:{responsive:false,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    options:{responsive:false,maintainAspectRatio:false,
+    plugins:{legend:{display:false},annotation:proto.target>0?{annotations:{line1:{type:'line',yMin:proto.target,yMax:proto.target,yScaleID:'y',borderColor:'rgba(30,142,62,0.6)',borderWidth:1.5,borderDash:[4,4]}}}:{}},
     scales:{
       x:{ticks:{color:tc,font:{size:10},autoSkip:false,maxRotation:0},grid:{color:gc},border:{display:false}},
       y:{min:0,max:48,position:'left',ticks:{color:tc,font:{size:9},stepSize:12,callback:v=>v+'h'},grid:{color:gc},border:{display:false}},
-      y2:{min:0,max:12,position:'right',ticks:{color:'#178DD8',font:{size:9},stepSize:4},grid:{display:false},border:{display:false}}
+      y2:{min:0,max:12,position:'right',ticks:{color:'#4CAF50',font:{size:9},stepSize:4},grid:{display:false},border:{display:false}}
     }}
   });
 }
 
+/* ═══════════════ GUIDE ═══════════════ */
 function renderGuida(){
   const container=document.getElementById('phaseCards');container.innerHTML='';
   PHASES.forEach((ph,idx)=>{
@@ -451,6 +853,12 @@ function renderGuida(){
     <div class="pic-body" id="body-${idx}"><div class="pic-tags">${tagHtml}</div>${ph.body}</div>`;
     container.appendChild(card);
   });
+  const tipsList=document.getElementById('tipsList');
+  tipsList.innerHTML=TIPS.map(t=>`
+    <div style="display:flex;gap:10px;padding:9px 0;border-bottom:0.5px solid var(--border)">
+      <i class="ti ${t.icon}" style="font-size:18px;color:var(--info);flex-shrink:0;margin-top:1px" aria-hidden="true"></i>
+      <p style="font-size:13px;color:var(--text-secondary);line-height:1.55;margin:0">${t.text}</p>
+    </div>`).join('').replace(/border-bottom[^}]+}\s*$/,'');
 }
 
 function togglePhase(idx){
@@ -461,25 +869,48 @@ function togglePhase(idx){
   if(!open){body.classList.add('open');chev.style.transform='rotate(180deg)'}
 }
 
+/* ═══════════════ SHARE ═══════════════ */
+function openShare(){
+  document.getElementById('shareLink').textContent=window.location.href.split('?')[0];
+  document.getElementById('shareModal').classList.add('open');
+}
+function closeShare(e){
+  if(!e||e.target===document.getElementById('shareModal'))
+    document.getElementById('shareModal').classList.remove('open');
+}
+function copyLink(){
+  const url=window.location.href.split('?')[0];
+  if(navigator.clipboard){navigator.clipboard.writeText(url).then(()=>showToast('Link copiato! 📋'))}
+  else{const ta=document.createElement('textarea');ta.value=url;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('Link copiato! 📋')}
+  closeShare();
+}
+function shareNative(){
+  const url=window.location.href.split('?')[0];
+  if(navigator.share){
+    navigator.share({title:'Digiuno Intermittente',text:'Prova questa app gratuita per tracciare il digiuno intermittente!',url}).then(()=>closeShare()).catch(()=>{})
+  } else {copyLink()}
+}
+
+/* ═══════════════ TABS ═══════════════ */
 function sw(name){
-  const names=['fase','acqua','registra','storico','guida'];
+  const names=['fase','acqua','diario','peso','storico','guida'];
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',names[i]===name));
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
   if(name==='storico')renderHistory();
   if(name==='fase')renderActiveFast();
   if(name==='acqua')renderWater();
+  if(name==='diario'){renderStars('starsEnergia','energia');renderStars('starsFame','fame');renderStars('starsUmore','umore');renderDiaryList()}
+  if(name==='peso'){renderWeight();setWeightNow()}
   if(name==='guida')renderGuida();
 }
 
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400)}
-
+/* ═══════════════ INIT ═══════════════ */
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
-
-const now=new Date();
-document.getElementById('sDate').value=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
-document.getElementById('sTime').value=pad(now.getHours())+':'+pad(now.getMinutes());
-renderActiveFast();renderWater();
+const _now=new Date();
+document.getElementById('sDate').value=_now.getFullYear()+'-'+pad(_now.getMonth()+1)+'-'+pad(_now.getDate());
+document.getElementById('sTime').value=pad(_now.getHours())+':'+pad(_now.getMinutes());
+renderActiveFast();renderWater();renderProtocols();
 </script>
 </body>
 </html>
