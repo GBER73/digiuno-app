@@ -363,6 +363,30 @@
   </div>
 </div>
 
+
+<!-- EDIT MODAL -->
+<div class="overlay" id="editOverlay" onclick="closeEdit(event)">
+  <div class="modal">
+    <button class="mcls" onclick="closeEdit(null)"><i class="ti ti-x"></i></button>
+    <h3><i class="ti ti-pencil" style="vertical-align:-2px;margin-right:6px;color:var(--info)"></i>Modifica digiuno</h3>
+    <input type="hidden" id="editIdx">
+    <label class="flbl" style="margin-top:4px">Inizio</label>
+    <div class="frow">
+      <div class="iwrap"><i class="ti ti-calendar"></i><input type="date" class="inp" id="edSD"></div>
+      <div class="iwrap"><i class="ti ti-clock"></i><input type="time" class="inp" id="edST"></div>
+    </div>
+    <label class="flbl">Fine</label>
+    <div class="frow">
+      <div class="iwrap"><i class="ti ti-calendar"></i><input type="date" class="inp" id="edED"></div>
+      <div class="iwrap"><i class="ti ti-clock"></i><input type="time" class="inp" id="edET"></div>
+    </div>
+    <label class="flbl">Note</label>
+    <div style="margin-bottom:12px"><textarea class="inp" id="edNote" placeholder="Note..."></textarea></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" onclick="saveEdit()" style="flex:1"><i class="ti ti-device-floppy" style="vertical-align:-2px;margin-right:4px"></i>Salva modifiche</button>
+    </div>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -669,7 +693,12 @@ function renderStreak(){
   for(let i=6;i>=0;i--){
     const d=new Date(now); d.setDate(d.getDate()-i);
     const dk=d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());
-    const df=fasts.filter(f=>f.start.startsWith(dk)||(f.end&&f.end.startsWith(dk)));
+    // A fast counts for a day if any part of it falls on that day
+    const df=fasts.filter(f=>{
+      const fs=new Date(f.start), fe=f.end?new Date(f.end):new Date();
+      const dayStart=new Date(dk+'T00:00:00'), dayEnd=new Date(dk+'T23:59:59');
+      return fs<=dayEnd && fe>=dayStart;
+    });
     const maxH=df.length?Math.max(...df.map(f=>f.durationH)):0;
     const goalOk=pr.tgt>0&&maxH>=pr.tgt;
     const div=document.createElement('div'); div.className='sd'+(goalOk?' goal':maxH>0?' done':'');
@@ -778,6 +807,35 @@ function manualUpdate(){
   if('serviceWorker' in navigator){
     navigator.serviceWorker.getRegistrations().then(regs=>{ regs.forEach(r=>r.update()); setTimeout(()=>window.location.reload(true),800); });
   } else { window.location.reload(true); }
+}
+
+
+/* ── EDIT FAST ── */
+function openEdit(i){
+  const f=fasts[i];
+  document.getElementById('editIdx').value=i;
+  const s=new Date(f.start), e=new Date(f.end);
+  document.getElementById('edSD').value=s.getFullYear()+'-'+p(s.getMonth()+1)+'-'+p(s.getDate());
+  document.getElementById('edST').value=p(s.getHours())+':'+p(s.getMinutes());
+  document.getElementById('edED').value=e.getFullYear()+'-'+p(e.getMonth()+1)+'-'+p(e.getDate());
+  document.getElementById('edET').value=p(e.getHours())+':'+p(e.getMinutes());
+  document.getElementById('edNote').value=f.note||'';
+  document.getElementById('editOverlay').classList.add('open');
+}
+function closeEdit(e){ if(!e||e.target===document.getElementById('editOverlay')) document.getElementById('editOverlay').classList.remove('open'); }
+function saveEdit(){
+  const i=parseInt(document.getElementById('editIdx').value);
+  const sd=document.getElementById('edSD').value, st=document.getElementById('edST').value;
+  const ed=document.getElementById('edED').value, et=document.getElementById('edET').value;
+  const note=document.getElementById('edNote').value.trim();
+  if(!sd||!st||!ed||!et){ toast('Compila tutti i campi'); return; }
+  const start=new Date(sd+'T'+st), end=new Date(ed+'T'+et);
+  if(end<=start){ toast('La fine deve essere dopo l'inizio'); return; }
+  const dur=(end-start)/3600000;
+  fasts[i]={...fasts[i], start:start.toISOString(), end:end.toISOString(), durationH:dur, note};
+  localStorage.setItem('ij_fasts',JSON.stringify(fasts));
+  toast('Modificato: '+dur.toFixed(1)+'h');
+  closeEdit(null); renderStorico();
 }
 
 /* ── INIT ── */
