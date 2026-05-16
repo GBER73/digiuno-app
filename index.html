@@ -681,13 +681,9 @@ function renderStreak() {
     var dayStart=new Date(dk+'T00:00:00'), dayEnd=new Date(dk+'T23:59:59');
     var maxH=0;
     for(var j=0;j<fasts.length;j++) {
-      var fs=new Date(fasts[j].start), fe=fasts[j].end?new Date(fasts[j].end):new Date();
-      if(fs<=dayEnd && fe>=dayStart) {
-        // Calcola solo le ore che ricadono in questo giorno specifico
-        var overlapStart=fs<dayStart?dayStart:fs;
-        var overlapEnd=fe>dayEnd?dayEnd:fe;
-        var hoursInDay=(overlapEnd-overlapStart)/3600000;
-        if(hoursInDay>maxH) maxH=hoursInDay;
+      // Conta il digiuno sul giorno in cui è INIZIATO
+      if(fasts[j].start.startsWith(dk)) {
+        if(fasts[j].durationH>maxH) maxH=fasts[j].durationH;
       }
     }
     var goalOk=pr.tgt>0&&maxH>=pr.tgt;
