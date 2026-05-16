@@ -269,7 +269,7 @@
     </div>
     <div class="chwrap">
       <div class="chhdr"><h2>Storico digiuni</h2><span style="font-size:11px;color:var(--t3)">ore</span></div>
-      <div class="chscroll"><canvas id="fChart"></canvas></div>
+      <div class="chscroll" id="fChartWrap"><canvas id="fChart"></canvas></div>
       <div class="leg">
         <div class="li"><div class="lsq" style="background:#178DD8"></div>Ore digiuno</div>
         <div class="li"><div class="lsq" style="background:#4CAF50"></div>Acqua (bic.)</div>
@@ -295,8 +295,8 @@
   </div>
 
   <div class="updbar">
-    <span><i class="ti ti-refresh" style="vertical-align:-2px;margin-right:4px"></i>Aggiornamenti manuali</span>
-    <button class="btn-sm" onclick="manualUpdate()"><i class="ti ti-refresh" style="vertical-align:-2px;margin-right:3px"></i>Aggiorna app</button>
+    <i class="ti ti-info-circle" style="color:var(--blue);font-size:16px;flex-shrink:0"></i>
+    <span>Per aggiornare l'app: svuota la cache di Chrome dalle impostazioni del browser</span>
   </div>
 
 </div>
@@ -424,7 +424,8 @@ function saveFast() {
     goTab('fase');
   } else {
     var dur=(end-start)/3600000;
-    fasts.unshift({id:Date.now(),start:start.toISOString(),end:end.toISOString(),durationH:dur,cups:water[todayKey()]||0,note:note});
+    var startKey=sd; // use start date for water lookup
+    fasts.unshift({id:Date.now(),start:start.toISOString(),end:end.toISOString(),durationH:dur,cups:water[startKey]||0,note:note});
     localStorage.setItem('ij_fasts',JSON.stringify(fasts));
     showToast('Salvato: '+dur.toFixed(1)+'h');
   }
@@ -438,7 +439,8 @@ function saveFast() {
 function endNow() {
   if(!active) return;
   var start=new Date(active.start), end=new Date(), dur=(end-start)/3600000;
-  fasts.unshift({id:active.id,start:active.start,end:end.toISOString(),durationH:dur,cups:water[todayKey()]||0,note:active.note||''});
+  var activeStartKey=active.start.substring(0,10);
+  fasts.unshift({id:active.id,start:active.start,end:end.toISOString(),durationH:dur,cups:water[activeStartKey]||0,note:active.note||''});
   localStorage.setItem('ij_fasts',JSON.stringify(fasts));
   active=null; localStorage.removeItem('ij_active');
   clearInterval(tInt);
@@ -694,9 +696,20 @@ function renderStreak() {
 }
 
 function renderFChart(data) {
-  var ctx=document.getElementById('fChart');
   if(fChartInst) { fChartInst.destroy(); fChartInst=null; }
-  if(!data.length) { ctx.width=300; ctx.height=150; return; }
+  var ctx=document.getElementById('fChart');
+  if(!data.length) {
+    var wrap=document.getElementById('fChartWrap');
+    var ew=wrap?wrap.offsetWidth:320;
+    ctx.width=ew; ctx.height=160;
+    var cx=ctx.getContext('2d');
+    cx.clearRect(0,0,ctx.width,ctx.height);
+    cx.fillStyle='#9c9a92';
+    cx.font='13px sans-serif';
+    cx.textAlign='center';
+    cx.fillText('Nessun dato ancora',ctx.width/2,ctx.height/2);
+    return;
+  }
   var sorted=[].concat(data).reverse().slice(-12);
   var labels=[], durs=[], cups=[];
   for(var i=0;i<sorted.length;i++) {
@@ -705,19 +718,28 @@ function renderFChart(data) {
     durs.push(parseFloat(sorted[i].durationH.toFixed(1)));
     cups.push(sorted[i].cups||0);
   }
-  var bw=Math.max(280,sorted.length*36); ctx.width=bw; ctx.height=175;
+  var wrap=document.getElementById('fChartWrap');
+  var availW=wrap?wrap.offsetWidth-24:320;
+  var bw=Math.max(availW, sorted.length*40);
+  ctx.width=bw; ctx.height=180;
   var dark=matchMedia('(prefers-color-scheme:dark)').matches;
   var tc=dark?'#9c9a92':'#73726c', gc=dark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)';
   var bgColors=[], bdColors=[];
   for(var i=0;i<durs.length;i++) { bgColors.push(getPhase(durs[i]).color+'BB'); bdColors.push(getPhase(durs[i]).color); }
+  // find max cups for y2 scale
+  var maxC=0; for(var i=0;i<cups.length;i++) { if(cups[i]>maxC) maxC=cups[i]; }
+  var y2max=Math.max(8, maxC+2);
   fChartInst=new Chart(ctx,{type:'bar',data:{labels:labels,datasets:[
     {label:'Ore',data:durs,backgroundColor:bgColors,borderColor:bdColors,borderWidth:1.5,borderRadius:4,yAxisID:'y',order:1},
-    {label:'Acqua',data:cups,type:'line',borderColor:'#4CAF50',backgroundColor:'rgba(76,175,80,0.08)',borderWidth:2,pointRadius:3,pointBackgroundColor:'#4CAF50',fill:true,yAxisID:'y2',order:0}
-  ]},options:{responsive:false,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    {label:'Acqua',data:cups,type:'line',borderColor:'#4CAF50',backgroundColor:'rgba(76,175,80,0.08)',borderWidth:2,pointRadius:4,pointBackgroundColor:'#4CAF50',fill:true,yAxisID:'y2',order:0}
+  ]},options:{responsive:false,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){
+    if(ctx.dataset.yAxisID==='y') return ctx.parsed.y+'h — '+getPhase(ctx.parsed.y).name;
+    return ctx.parsed.y+' bicchieri';
+  }}}},
   scales:{
     x:{ticks:{color:tc,font:{size:10},autoSkip:false,maxRotation:0},grid:{color:gc},border:{display:false}},
     y:{min:0,max:48,position:'left',ticks:{color:tc,font:{size:9},stepSize:12,callback:function(v){return v+'h';}},grid:{color:gc},border:{display:false}},
-    y2:{min:0,max:12,position:'right',ticks:{color:'#4CAF50',font:{size:9},stepSize:4},grid:{display:false},border:{display:false}}
+    y2:{min:0,max:y2max,position:'right',ticks:{color:'#4CAF50',font:{size:9},stepSize:2},grid:{display:false},border:{display:false}}
   }}});
 }
 
