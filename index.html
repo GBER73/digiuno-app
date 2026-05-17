@@ -297,7 +297,18 @@
 
   <div class="updbar">
     <i class="ti ti-info-circle" style="color:var(--blue);font-size:16px;flex-shrink:0"></i>
-    <span>Per aggiornare l'app: svuota la cache di Chrome dalle impostazioni del browser</span>
+    <span style="font-size:12px;color:var(--t2)">v5 — I tuoi dati sono salvati sul dispositivo</span>
+  </div>
+
+  <!-- UPDATE BANNER -->
+  <div id="updateBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;background:#178DD8;color:white;padding:14px 16px;z-index:500;display:none;align-items:center;gap:12px;box-shadow:0 -2px 12px rgba(0,0,0,.2)">
+    <i class="ti ti-refresh" style="font-size:20px;flex-shrink:0"></i>
+    <div style="flex:1">
+      <div style="font-size:14px;font-weight:600">Aggiornamento disponibile!</div>
+      <div style="font-size:12px;opacity:.9">Tocca per installare la nuova versione</div>
+    </div>
+    <button onclick="doUpdate()" style="background:white;color:#178DD8;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Aggiorna</button>
+    <button onclick="dismissUpdate()" style="background:none;border:none;color:white;font-size:20px;cursor:pointer;padding:4px"><i class="ti ti-x"></i></button>
   </div>
 
 </div>
@@ -870,7 +881,53 @@ function manualUpdate() {
 }
 
 /* INIT */
-if('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(function(){}); }
+if('serviceWorker' in navigator) {
+  var swReg = null;
+
+  navigator.serviceWorker.register('sw.js', {updateViaCache:'none'}).then(function(reg) {
+    swReg = reg;
+
+    // Controlla subito se c'è già un worker in attesa
+    if(reg.waiting) {
+      showUpdateBanner();
+    }
+
+    // Quando arriva un nuovo service worker in attesa
+    reg.addEventListener('updatefound', function() {
+      var newWorker = reg.installing;
+      newWorker.addEventListener('statechange', function() {
+        if(newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          showUpdateBanner();
+        }
+      });
+    });
+  }).catch(function(){});
+
+  // Quando il SW si attiva (dopo skipWaiting), ricarica la pagina
+  var refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', function() {
+    if(!refreshing) {
+      refreshing = true;
+      window.location.reload();
+    }
+  });
+}
+
+function showUpdateBanner() {
+  var banner = document.getElementById('updateBanner');
+  if(banner) { banner.style.display = 'flex'; }
+}
+
+function dismissUpdate() {
+  var banner = document.getElementById('updateBanner');
+  if(banner) { banner.style.display = 'none'; }
+}
+
+function doUpdate() {
+  if(swReg && swReg.waiting) {
+    swReg.waiting.postMessage({type: 'SKIP_WAITING'});
+  }
+}
 var _n=new Date();
 document.getElementById('sDate').value=_n.getFullYear()+'-'+pad(_n.getMonth()+1)+'-'+pad(_n.getDate());
 document.getElementById('sTime').value=pad(_n.getHours())+':'+pad(_n.getMinutes());
