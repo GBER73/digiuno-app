@@ -28,10 +28,11 @@
     .warn{background:var(--redbg);border:1.5px solid var(--red);border-radius:var(--rl);padding:12px 13px;margin:10px 12px 0;display:flex;gap:9px}
     .warn i{color:var(--red);font-size:19px;flex-shrink:0;margin-top:1px}
     .warn p{font-size:12px;color:var(--red);line-height:1.55;font-weight:500;margin:0}
-    .tabs{display:flex;border-bottom:.5px solid var(--br);background:var(--bg);position:sticky;top:74px;z-index:10;overflow-x:auto}
+    .tabs{display:flex;background:var(--bg2);position:sticky;top:74px;z-index:10;overflow-x:auto;padding:6px 8px;gap:5px;border-bottom:.5px solid var(--br)}
     .tabs::-webkit-scrollbar{display:none}
-    .tab{flex:1;min-width:52px;padding:9px 2px;font-size:11px;font-weight:500;text-align:center;color:var(--t2);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
-    .tab.active{color:var(--blue);border-bottom:2px solid var(--blue)}
+    .tab{flex:1;min-width:52px;padding:7px 4px;font-size:11px;font-weight:500;text-align:center;color:var(--t2);cursor:pointer;white-space:nowrap;border-radius:8px;border:none;background:transparent;transition:all .15s}
+    .tab:active{opacity:.7}
+    .tab.active{color:var(--blue);background:var(--bg);box-shadow:0 1px 4px rgba(0,0,0,.12);font-weight:600}
     .sec{display:none;padding:12px}
     .sec.active{display:block}
     .card{background:var(--bg2);border-radius:var(--rl);padding:14px;margin-bottom:10px;border:.5px solid var(--br)}
@@ -270,8 +271,8 @@
     <div class="chwrap">
       <div class="chhdr"><h2>Storico digiuni</h2><span style="font-size:11px;color:var(--t3)">ore</span></div>
       <div class="chscroll" id="fChartWrap"><canvas id="fChart"></canvas></div>
-      <div class="leg">
-        <div class="li"><div class="lsq" style="background:#178DD8"></div>Ore digiuno</div>
+      <div class="leg" id="fChartLegend">
+        <div class="li"><div class="lsq" style="background:#9C27B0"></div>Ore digiuno (colore = fase)</div>
         <div class="li"><div class="lsq" style="background:#4CAF50"></div>Acqua (bic.)</div>
       </div>
     </div>
@@ -742,6 +743,20 @@ function renderFChart(data) {
     y:{min:0,max:48,position:'left',ticks:{color:tc,font:{size:9},stepSize:12,callback:function(v){return v+'h';}},grid:{color:gc},border:{display:false}},
     y2:{min:0,max:y2max,position:'right',ticks:{color:'#4CAF50',font:{size:9},stepSize:2},grid:{display:false},border:{display:false}}
   }}});
+  // Update legend with actual phase colors as gradient squares
+  var legEl=document.getElementById('fChartLegend');
+  if(legEl) {
+    var gradParts='';
+    var phaseStops=[
+      {color:'#4CAF50',pct:0},{color:'#FF9800',pct:20},{color:'#F44336',pct:40},
+      {color:'#9C27B0',pct:60},{color:'#2196F3',pct:75},{color:'#00BCD4',pct:88},{color:'#FF5722',pct:100}
+    ];
+    var grad='linear-gradient(to right';
+    for(var g=0;g<phaseStops.length;g++) grad+=','+phaseStops[g].color+' '+phaseStops[g].pct+'%';
+    grad+=')';
+    legEl.innerHTML='<div class="li"><div class="lsq" style="background:'+grad+';width:28px;border-radius:3px"></div>Ore digiuno (colore = fase raggiunta)</div>'+
+      '<div class="li"><div class="lsq" style="background:#4CAF50"></div>Acqua (bic.)</div>';
+  }
 }
 
 /* EDIT */
