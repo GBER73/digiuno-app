@@ -292,6 +292,11 @@
   <div class="sec" id="tab-guida">
     <div class="card" style="margin-bottom:10px"><h2>Le fasi del digiuno</h2><p style="font-size:13px;color:var(--t2);line-height:1.5">Tocca una fase per scoprire cosa succede al tuo corpo.</p></div>
     <div id="phaseCards"></div>
+    <div class="card" style="margin-bottom:10px">
+      <h2>Protocolli del digiuno intermittente</h2>
+      <p style="font-size:13px;color:var(--t2);line-height:1.5;margin-bottom:10px">Tocca un protocollo per scoprire come funziona e a chi è indicato.</p>
+      <div id="protocolCards"></div>
+    </div>
     <div class="card"><h2>Consigli pratici</h2><div id="tipsList"></div></div>
   </div>
 
@@ -370,6 +375,106 @@ var PROTOS = [
   {id:'24h',name:'24h',tgt:24,desc:'OMAD'},
   {id:'36h',name:'36h',tgt:36,desc:'Alternate Day'},
   {id:'free',name:'Libero',tgt:0,desc:'Nessun target'}
+];
+
+var PROTOCOLS_GUIDE = [
+  {
+    id:'cal',
+    name:'Piano di avvicinamento',
+    subtitle:'Per chi inizia da zero',
+    color:'#4CAF50',
+    icon:'ti-calendar',
+    tags:['Graduale','4 settimane','Per principianti'],
+    pros:'Approccio progressivo, permette al corpo di adattarsi senza stress.',
+    cons:'Richiede pazienza — i benefici completi arrivano nelle settimane finali.',
+    body:'<p>Un piano graduale su 4 settimane per abituare il corpo al digiuno intermittente:</p>'+
+    '<p><strong>Settimana 1:</strong> 12 ore di digiuno ogni giorno (es. dalle 19:00 alle 7:00)</p>'+
+    '<p><strong>Settimana 2:</strong> 14 ore nei giorni feriali, 12 ore nel weekend</p>'+
+    '<p><strong>Settimana 3:</strong> 16 ore nei giorni feriali, 14 ore nel weekend</p>'+
+    '<p><strong>Settimana 4:</strong> 16 ore ogni giorno della settimana</p>'+
+    '<p>Tenersi impegnati e distrarsi mentalmente dal fatto che si è a digiuno aiuta ad arrivare al momento del pasto senza difficoltà.</p>'
+  },
+  {
+    id:'12_12',
+    name:'Protocollo 12:12',
+    subtitle:'12h digiuno · 12h alimentazione',
+    color:'#8BC34A',
+    icon:'ti-clock',
+    tags:['Principianti','Diabete tipo 1','Nessun pasto saltato'],
+    pros:'Approccio graduale, non richiede di saltare pasti, adatto anche a chi ha diabete di tipo 1.',
+    cons:'Benefici incompleti — la rigenerazione cellulare raggiunge il picco dopo 14 ore.',
+    body:'<p>Divide la giornata a metà: 12 ore di alimentazione e 12 di digiuno, la maggior parte delle quali coincidono con la notte.</p>'+
+    '<p>È particolarmente indicato per chi vuole iniziare il percorso meno drasticamente, perché la finestra alimentare è abbastanza lunga da non richiedere di saltare nessun pasto.</p>'+
+    '<p><strong>Esempio orario:</strong></p>'+
+    '<p>🥐 Colazione ore 8:30 &nbsp;|&nbsp; 🍝 Pranzo ore 13:30 &nbsp;|&nbsp; 🍽 Cena ore 20:00</p>'+
+    '<p>La finestra di digiuno va dalle 20:00 alle 8:00 del mattino successivo.</p>'
+  },
+  {
+    id:'14_10',
+    name:'Protocollo 14:10',
+    subtitle:'14h digiuno · 10h alimentazione',
+    color:'#FF9800',
+    icon:'ti-clock',
+    tags:['Intermedio','Anti-infiammatorio','Flessibile'],
+    pros:'Si inizia già a beneficiare dell'azione antinfiammatoria del digiuno.',
+    cons:'I benefici massimi si raggiungono con 16 ore — non con 14.',
+    body:'<p>Variante del 16:8, consigliata a chi è restio a stare 16 ore a digiuno o ha necessità specifiche di orario.</p>'+
+    '<p>Con 14 ore di digiuno si ottiene già l'azione antinfiammatoria, anche se il picco dei benefici si raggiunge con le 16 ore.</p>'+
+    '<p>È un buon compromesso per chi esce dal 12:12 e non si sente ancora pronto per il 16:8.</p>'
+  },
+  {
+    id:'16_8g',
+    name:'Protocollo 16:8',
+    subtitle:'16h digiuno · 8h alimentazione',
+    color:'#F44336',
+    icon:'ti-star',
+    tags:['Consigliato','Autofagia','Anti-infiammatorio'],
+    pros:'Azione antinfiammatoria completa, autofagia, dimagrimento, abbassamento glicemia colesterolo e pressione.',
+    cons:'Richiede di saltare un pasto (colazione o cena).',
+    body:'<p>Il protocollo più diffuso e consigliato. Prevede 16 ore di digiuno e 8 ore di alimentazione. Molto più semplice di quanto si pensi: è una sfida più mentale che fisica.</p>'+
+    '<p><strong>Con salto della colazione:</strong><br>🍝 Pranzo ore 13:00 &nbsp;|&nbsp; 🍎 Spuntino ore 17:00 &nbsp;|&nbsp; 🍽 Cena ore 20:30<br><em>Indicato a chi la mattina non ha fame o va di fretta.</em></p>'+
+    '<p><strong>Con salto della cena:</strong><br>🥐 Colazione ore 8:00 &nbsp;|&nbsp; 🍝 Pranzo ore 13:00 &nbsp;|&nbsp; 🍎 Spuntino ore 15:30<br><em>Consigliato a chi ha reflusso o dorme male.</em></p>'+
+    '<p>Durante le ore di digiuno si può bere acqua, caffè, tè o tisane — tutto senza zucchero o edulcoranti.</p>'
+  },
+  {
+    id:'18_6g',
+    name:'Protocollo 18:6',
+    subtitle:'18h digiuno · 6h alimentazione',
+    color:'#9C27B0',
+    icon:'ti-clock',
+    tags:['Avanzato','Esperienza pregressa'],
+    pros:'Azione completa del digiuno con tutti i benefici metabolici.',
+    cons:'Finestra alimentare ridotta — difficile assumere tutti i nutrienti necessari.',
+    body:'<p>Allungamento del digiuno rispetto al 16:8. Non è ancora scientificamente provato che i benefici siano maggiori rispetto alle 16 ore.</p>'+
+    '<p>È consigliabile non superare le 18 ore di digiuno: consumare tutto in poche ore potrebbe portare a non assumere tutti i macronutrienti e micronutrienti di cui si ha bisogno.</p>'+
+    '<p>Adatto solo a chi ha già esperienza con il 16:8 e vuole sperimentare un ulteriore allungamento.</p>'
+  },
+  {
+    id:'20_4g',
+    name:'Protocollo 20:4',
+    subtitle:'20h digiuno · 4h alimentazione',
+    color:'#FF5722',
+    icon:'ti-alert-triangle',
+    tags:['Sconsigliato ai principianti','Rischio carenze','Solo esperti'],
+    pros:'Azione completa del digiuno.',
+    cons:'Finestra alimentare troppo corta, difficile alimentarsi in modo equilibrato, possibili attacchi di fame nervosa.',
+    body:'<p>Prevede solo 4 ore per alimentarsi. Il rischio principale è non riuscire ad assumere tutti i nutrienti necessari in così poco tempo.</p>'+
+    '<p>Può scattare un meccanismo per cui, avendo poco tempo, si ingerisce qualsiasi cosa senza criterio. Se non si segue un piano alimentare bilanciato, i benefici del digiuno vengono annullati.</p>'+
+    '<p><strong>Fortemente sconsigliato ai principianti.</strong> Può portare a grandi sensi di fame e attacchi di fame nervosa.</p>'
+  },
+  {
+    id:'omad',
+    name:'OMAD — One Meal A Day',
+    subtitle:'23h digiuno · 1h alimentazione',
+    color:'#795548',
+    icon:'ti-alert-triangle',
+    tags:['Non sostenibile','Solo occasionale','Sconsigliato'],
+    pros:'Soluzione comoda occasionalmente in giornate molto impegnative.',
+    cons:'Impossibile assumere tutti i nutrienti in un solo pasto, appesantimento, non sostenibile come stile di vita.',
+    body:'<p>Acronimo di "One Meal A Day" — un solo pasto al giorno. Equivale a un protocollo 23:1, molto restrittivo.</p>'+
+    '<p>Il grande limite è non riuscire ad assumere tutti i macronutrienti e micronutrienti necessari con un solo pasto, costringendo a un pasto così abbondante da risultare appesantenti.</p>'+
+    '<p>Può essere seguito <strong>occasionalmente</strong> durante una giornata particolarmente impegnativa, ma <strong>non è adatto a diventare uno stile di vita.</strong></p>'
+  }
 ];
 
 var TIPS = [
@@ -798,6 +903,51 @@ function saveEdit() {
 }
 
 /* GUIDE */
+function renderProtocolCards() {
+  var cont=document.getElementById('protocolCards'); cont.innerHTML='';
+  for(var idx=0;idx<PROTOCOLS_GUIDE.length;idx++) {
+    var pr=PROTOCOLS_GUIDE[idx];
+    var tags='';
+    for(var t=0;t<pr.tags.length;t++) tags+='<span class="ptag" style="background:'+pr.color+'22;color:'+pr.color+'">'+pr.tags[t]+'</span>';
+    var card=document.createElement('div');
+    card.style.cssText='border:.5px solid var(--br);border-radius:10px;margin-bottom:8px;overflow:hidden;';
+    card.innerHTML='<div style="display:flex;align-items:center;gap:10px;padding:12px 13px;cursor:pointer;min-height:48px;background:var(--bg)" onclick="toggleProt('+idx+')">'+
+      '<div style="width:32px;height:32px;border-radius:8px;background:'+pr.color+'22;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+
+      '<i class="ti '+pr.icon+'" style="font-size:16px;color:'+pr.color+'"></i></div>'+
+      '<div style="flex:1">'+
+      '<div style="font-size:14px;font-weight:600;color:var(--t1)">'+pr.name+'</div>'+
+      '<div style="font-size:11px;color:var(--t2);margin-top:1px">'+pr.subtitle+'</div></div>'+
+      '<i class="ti ti-chevron-down" id="pch-'+idx+'" style="font-size:17px;color:var(--t3);transition:transform .2s"></i></div>'+
+      '<div id="ppb-'+idx+'" style="max-height:0;overflow:hidden;transition:max-height .35s ease,padding .2s;background:var(--bg2)">'+
+      '<div style="padding:0 13px 13px">'+
+      '<div style="margin-bottom:9px;padding-top:10px">'+tags+'</div>'+
+      '<div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">'+
+      '<div style="flex:1;min-width:120px;background:var(--grnbg);border-radius:8px;padding:8px 10px">'+
+      '<div style="font-size:11px;font-weight:600;color:var(--grn);margin-bottom:3px">✓ Vantaggi</div>'+
+      '<div style="font-size:12px;color:var(--t2);line-height:1.5">'+pr.pros+'</div></div>'+
+      '<div style="flex:1;min-width:120px;background:var(--redbg);border-radius:8px;padding:8px 10px">'+
+      '<div style="font-size:11px;font-weight:600;color:var(--red);margin-bottom:3px">✗ Svantaggi</div>'+
+      '<div style="font-size:12px;color:var(--t2);line-height:1.5">'+pr.cons+'</div></div></div>'+
+      pr.body+'</div></div>';
+    cont.appendChild(card);
+  }
+}
+
+function toggleProt(idx) {
+  var b=document.getElementById('ppb-'+idx), ch=document.getElementById('pch-'+idx);
+  var open=b.style.maxHeight&&b.style.maxHeight!=='0px';
+  // close all
+  for(var i=0;i<PROTOCOLS_GUIDE.length;i++) {
+    var ob=document.getElementById('ppb-'+i), oc=document.getElementById('pch-'+i);
+    if(ob) { ob.style.maxHeight='0px'; ob.style.padding='0'; }
+    if(oc) oc.style.transform='';
+  }
+  if(!open) {
+    b.style.maxHeight='800px'; b.style.padding='';
+    ch.style.transform='rotate(180deg)';
+  }
+}
+
 function renderGuida() {
   var cont=document.getElementById('phaseCards'); cont.innerHTML='';
   for(var idx=0;idx<PHASES.length;idx++) {
@@ -813,6 +963,7 @@ function renderGuida() {
       '<div class="picb" id="pb-'+idx+'"><div style="margin-bottom:8px">'+tags+'</div>'+ph.body+'</div>';
     cont.appendChild(card);
   }
+  renderProtocolCards();
   var tips=document.getElementById('tipsList'), html='';
   for(var i=0;i<TIPS.length;i++) {
     html+='<div style="display:flex;gap:10px;padding:9px 0;border-bottom:'+(i<TIPS.length-1?'.5px solid var(--br)':'none')+'">'+
