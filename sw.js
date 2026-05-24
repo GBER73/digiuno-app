@@ -1,5 +1,5 @@
-const CACHE = 'digiuno-v5';
-const ASSETS = [
+var CACHE = 'digiuno-v1';
+var ASSETS = [
   './',
   './index.html',
   './manifest.json',
@@ -7,25 +7,20 @@ const ASSETS = [
   'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js'
 ];
 
-// Installa i nuovi file in cache
 self.addEventListener('install', function(e) {
   e.waitUntil(
     caches.open(CACHE).then(function(cache) {
       return cache.addAll(ASSETS);
     })
   );
-  // Appena installato, segnala che c'è un aggiornamento pronto
-  // ma NON attivare ancora — aspetta che l'utente confermi
 });
 
-// Quando l'utente tocca "Aggiorna" mandiamo skipWaiting
 self.addEventListener('message', function(e) {
   if (e.data && e.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
 });
 
-// Attivazione: pulisce le cache vecchie
 self.addEventListener('activate', function(e) {
   e.waitUntil(
     caches.keys().then(function(keys) {
@@ -39,7 +34,6 @@ self.addEventListener('activate', function(e) {
   );
 });
 
-// Fetch: serve dalla cache, fallback alla rete
 self.addEventListener('fetch', function(e) {
   e.respondWith(
     caches.match(e.request).then(function(cached) {

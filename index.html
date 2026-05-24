@@ -18,7 +18,25 @@
     @media(prefers-color-scheme:dark){:root{--bg:#1c1c1a;--bg2:#252522;--bg3:#2c2c29;--t1:#f0efe8;--t2:#9c9a92;--t3:#6b6a64;--br:rgba(255,255,255,.1);--brm:rgba(255,255,255,.22);--blue:#4aabef;--bluebg:#0c2d45;--red:#f28b82;--redbg:#3c1a18;--grn:#5bb974;--grnbg:#1a3022}}
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
     html,body{height:100%;background:var(--bg3);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px}
-    .app{max-width:480px;margin:0 auto;background:var(--bg);min-height:100%}
+
+    /* LOGIN */
+    .login-wrap{position:fixed;inset:0;background:var(--bg3);display:flex;align-items:center;justify-content:center;z-index:999;padding:20px}
+    .login-box{background:var(--bg);border-radius:20px;padding:32px 24px;width:100%;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,.12)}
+    .login-logo{width:56px;height:56px;border-radius:16px;background:var(--bluebg);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+    .login-logo i{font-size:28px;color:var(--blue)}
+    .login-box h1{font-size:22px;font-weight:700;color:var(--t1);text-align:center;margin-bottom:4px}
+    .login-box p{font-size:13px;color:var(--t2);text-align:center;margin-bottom:24px}
+    .login-inp-wrap{position:relative;margin-bottom:12px}
+    .login-inp-wrap i{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--t3)}
+    .login-inp{width:100%;padding:13px 13px 13px 40px;font-size:15px;border-radius:10px;border:1.5px solid var(--brm);background:var(--bg2);color:var(--t1);font-family:inherit}
+    .login-inp:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(23,141,216,.15)}
+    .login-btn{width:100%;padding:13px;background:var(--blue);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px}
+    .login-btn:active{opacity:.8}
+    .login-err{font-size:13px;color:var(--red);text-align:center;margin-top:10px;min-height:20px}
+
+    /* APP */
+    .app{max-width:480px;margin:0 auto;background:var(--bg);min-height:100%;display:none}
+    .app.visible{display:block}
     .hdr{padding:52px 14px 10px;display:flex;align-items:center;gap:10px;border-bottom:.5px solid var(--br);background:var(--bg);position:sticky;top:0;z-index:10}
     .hdr-ico{width:36px;height:36px;border-radius:10px;background:var(--bluebg);display:flex;align-items:center;justify-content:center}
     .hdr-ico i{font-size:20px;color:var(--blue)}
@@ -30,8 +48,7 @@
     .warn p{font-size:12px;color:var(--red);line-height:1.55;font-weight:500;margin:0}
     .tabs{display:flex;background:var(--bg2);position:sticky;top:74px;z-index:10;overflow-x:auto;padding:6px 8px;gap:5px;border-bottom:.5px solid var(--br)}
     .tabs::-webkit-scrollbar{display:none}
-    .tab{flex:1;min-width:52px;padding:7px 4px;font-size:11px;font-weight:500;text-align:center;color:var(--t2);cursor:pointer;white-space:nowrap;border-radius:8px;border:none;background:transparent;transition:all .15s}
-    .tab:active{opacity:.7}
+    .tab{flex:1;min-width:52px;padding:7px 4px;font-size:11px;font-weight:500;text-align:center;color:var(--t2);cursor:pointer;white-space:nowrap;border-radius:8px;border:none;background:transparent}
     .tab.active{color:var(--blue);background:var(--bg);box-shadow:0 1px 4px rgba(0,0,0,.12);font-weight:600}
     .sec{display:none;padding:12px}
     .sec.active{display:block}
@@ -127,14 +144,33 @@
     .modal h3{font-size:17px;font-weight:600;color:var(--t1);margin-bottom:14px}
     .mcls{position:absolute;top:14px;right:14px;background:var(--bg2);border:none;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer;color:var(--t2);display:flex;align-items:center;justify-content:center}
     .lbox{background:var(--bg2);border-radius:var(--r);padding:12px;font-size:13px;color:var(--blue);word-break:break-all;margin-bottom:12px;border:.5px solid var(--br)}
-    .updbar{background:var(--bg2);border-top:.5px solid var(--br);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .updbar{background:var(--bg2);border-top:.5px solid var(--br);padding:10px 14px;display:flex;align-items:center;gap:8px}
     .updbar span{font-size:12px;color:var(--t2)}
-    .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#1a1a18;color:#f0efe8;padding:10px 22px;border-radius:22px;font-size:13px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;z-index:999}
+    .update-banner{display:none;position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;background:var(--blue);color:#fff;padding:14px 16px;z-index:500;align-items:center;gap:12px;box-shadow:0 -2px 12px rgba(0,0,0,.2)}
+    .update-banner.show{display:flex}
+    .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#1a1a18;color:#f0efe8;padding:10px 22px;border-radius:22px;font-size:13px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;z-index:600}
     .toast.show{opacity:1}
   </style>
 </head>
 <body>
-<div class="app">
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <div class="login-logo"><i class="ti ti-clock-pause"></i></div>
+    <h1>Digiuno Intermittente</h1>
+    <p>Inserisci la password per accedere</p>
+    <div class="login-inp-wrap">
+      <i class="ti ti-lock"></i>
+      <input type="password" class="login-inp" id="pwdInput" placeholder="Password" onkeydown="if(event.key==='Enter') doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Accedi</button>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="appWrap">
 
   <div class="hdr">
     <div class="hdr-ico"><i class="ti ti-clock-pause"></i></div>
@@ -259,7 +295,7 @@
         <div class="iwrap"><i class="ti ti-clock"></i><input type="time" class="inp" id="eTime"></div>
       </div>
       <label class="flbl">Note</label>
-      <div style="margin-bottom:10px"><textarea class="inp" id="fNote" placeholder="Come è andato?"></textarea></div>
+      <div style="margin-bottom:10px"><textarea class="inp" id="fNote" placeholder="Come e andato?"></textarea></div>
       <button class="btn" onclick="saveFast()"><i class="ti ti-device-floppy" style="vertical-align:-2px;margin-right:4px"></i>Salva digiuno</button>
     </div>
     <div class="srow" id="statsRow"></div>
@@ -272,13 +308,13 @@
       <div class="chhdr"><h2>Storico digiuni</h2><span style="font-size:11px;color:var(--t3)">ore</span></div>
       <div class="chscroll" id="fChartWrap"><canvas id="fChart"></canvas></div>
       <div class="leg" id="fChartLegend">
-        <div class="li"><div class="lsq" style="background:#9C27B0"></div>Ore digiuno (colore = fase)</div>
+        <div class="li"><div class="lsq" style="background:linear-gradient(to right,#4CAF50,#FF9800,#F44336,#9C27B0,#2196F3,#00BCD4,#FF5722);width:28px;border-radius:3px"></div>Ore digiuno (colore = fase)</div>
         <div class="li"><div class="lsq" style="background:#4CAF50"></div>Acqua (bic.)</div>
       </div>
     </div>
     <div class="card">
-      <h2>💾 Backup dati</h2>
-      <p style="font-size:12px;color:var(--t2);margin-bottom:8px">Esporta i dati prima di aggiornare l'app.</p>
+      <h2>Backup dati</h2>
+      <p style="font-size:12px;color:var(--t2);margin-bottom:8px">Esporta i dati prima di aggiornare.</p>
       <div style="display:flex;gap:8px">
         <button class="btn-sm" style="flex:1" onclick="exportData()"><i class="ti ti-download" style="vertical-align:-2px;margin-right:3px"></i>Esporta JSON</button>
         <button class="btn-sm" style="flex:1" onclick="document.getElementById('impFile').click()"><i class="ti ti-upload" style="vertical-align:-2px;margin-right:3px"></i>Importa JSON</button>
@@ -292,28 +328,13 @@
   <div class="sec" id="tab-guida">
     <div class="card" style="margin-bottom:10px"><h2>Le fasi del digiuno</h2><p style="font-size:13px;color:var(--t2);line-height:1.5">Tocca una fase per scoprire cosa succede al tuo corpo.</p></div>
     <div id="phaseCards"></div>
-    <div class="card" style="margin-bottom:10px">
-      <h2>Protocolli del digiuno intermittente</h2>
-      <p style="font-size:13px;color:var(--t2);line-height:1.5;margin-bottom:10px">Tocca un protocollo per scoprire come funziona e a chi è indicato.</p>
-      <div id="protocolCards"></div>
-    </div>
+    <div class="card" style="margin-bottom:10px"><h2>Protocolli del digiuno intermittente</h2><p style="font-size:13px;color:var(--t2);line-height:1.5;margin-bottom:10px">Tocca un protocollo per scoprire come funziona e a chi e indicato.</p><div id="protocolCards"></div></div>
     <div class="card"><h2>Consigli pratici</h2><div id="tipsList"></div></div>
   </div>
 
   <div class="updbar">
     <i class="ti ti-info-circle" style="color:var(--blue);font-size:16px;flex-shrink:0"></i>
-    <span style="font-size:12px;color:var(--t2)">v5 — I tuoi dati sono salvati sul dispositivo</span>
-  </div>
-
-  <!-- UPDATE BANNER -->
-  <div id="updateBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;background:#178DD8;color:white;padding:14px 16px;z-index:500;display:none;align-items:center;gap:12px;box-shadow:0 -2px 12px rgba(0,0,0,.2)">
-    <i class="ti ti-refresh" style="font-size:20px;flex-shrink:0"></i>
-    <div style="flex:1">
-      <div style="font-size:14px;font-weight:600">Aggiornamento disponibile!</div>
-      <div style="font-size:12px;opacity:.9">Tocca per installare la nuova versione</div>
-    </div>
-    <button onclick="doUpdate()" style="background:white;color:#178DD8;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Aggiorna</button>
-    <button onclick="dismissUpdate()" style="background:none;border:none;color:white;font-size:20px;cursor:pointer;padding:4px"><i class="ti ti-x"></i></button>
+    <span>v1 — Dati salvati sul dispositivo</span>
   </div>
 
 </div>
@@ -355,212 +376,212 @@
   </div>
 </div>
 
+<!-- UPDATE BANNER -->
+<div class="update-banner" id="updateBanner">
+  <i class="ti ti-refresh" style="font-size:20px;flex-shrink:0"></i>
+  <div style="flex:1">
+    <div style="font-size:14px;font-weight:600">Aggiornamento disponibile!</div>
+    <div style="font-size:12px;opacity:.9">Tocca per installare la nuova versione</div>
+  </div>
+  <button onclick="doUpdate()" style="background:#fff;color:var(--blue);border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Aggiorna</button>
+  <button onclick="dismissUpdate()" style="background:none;border:none;color:#fff;font-size:22px;cursor:pointer;padding:4px;line-height:1"><i class="ti ti-x"></i></button>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-var PHASES = [
-  {name:'Fase Anabolica',color:'#4CAF50',h0:0,h1:3,tags:['Insulina alta','Sintesi proteica','Glicogeno'],body:'<p>Dopo il pasto l\'insulina è alta e il corpo è in modalità costruzione. Carboidrati e proteine vengono assorbiti e trasportati alle cellule.</p><p>Il glucosio in eccesso viene convertito in glicogeno nel fegato e nei muscoli. Gli aminoacidi stimolano la sintesi proteica muscolare.</p><p>Il corpo non brucia grassi in questa fase: l\'insulina alta inibisce la lipolisi.</p>'},
-  {name:'Fase Catabolica',color:'#FF9800',h0:3,h1:8,tags:['Glicogeno attivo','Insulina cala','Energia stabile'],body:'<p>L\'insulina inizia a scendere e il corpo passa a bruciare le riserve di glicogeno per mantenere la glicemia stabile.</p><p>Verso le 6-8 ore il glicogeno epatico inizia ad esaurirsi. Il fegato aumenta la gluconeogenesi.</p><p>Si avverte una leggera fame ma i livelli di energia restano buoni.</p>'},
-  {name:'Brucia Grassi',color:'#F44336',h0:8,h1:16,tags:['Lipolisi attiva','Chetoni','Fame gestibile'],body:'<p>Con il glicogeno esaurito, l\'insulina bassa sblocca la lipolisi: i trigliceridi vengono scissi in glicerolo e acidi grassi liberi.</p><p>Gli acidi grassi al fegato producono corpi chetonici. Intorno alle 12-14 ore molti riferiscono maggiore chiarezza mentale e calo della fame.</p>'},
-  {name:'Chetosi Leggera',color:'#9C27B0',h0:16,h1:24,tags:['Chetoni elevati','Chiarezza mentale','GH in aumento'],body:'<p>La chetosi diventa misurabile. Il cervello inizia a usare i chetoni come fonte energetica principale.</p><p>L\'ormone della crescita (GH) sale fino a 5x i livelli basali, proteggendo la massa muscolare.</p><p>Benefici: riduzione infiammazione, miglioramento sensibilità insulinica, riduzione trigliceridi.</p>'},
-  {name:'Autofagia',color:'#2196F3',h0:24,h1:36,tags:['Riciclo cellulare','Anti-aging','Pulizia proteine'],body:'<p>L\'autofagia è il processo con cui le cellule riciclano componenti danneggiati. È intensamente attiva a digiuno prolungato.</p><p>I lisosomi inglobano mitocondri difettosi e proteine aggregate. Fondamentale nella prevenzione di malattie neurodegenerative.</p><p>Nobel medicina 2016 a Yoshinori Ohsumi per le scoperte sull\'autofagia.</p>'},
-  {name:'Picco Ormone Crescita',color:'#00BCD4',h0:36,h1:48,tags:['GH +2000%','Massa muscolare','Anti-aging'],body:'<p>Dopo 36-48 ore i livelli di GH possono aumentare del 1500-2000% rispetto ai livelli basali.</p><p>Il GH stimola la lipolisi, favorisce la sintesi proteica, migliora la densità ossea.</p><p>Si osserva anche un aumento della norepinefrina del 40%, con maggiore energia e focus mentale.</p>'},
-  {name:'Rigenerazione Cellulare',color:'#FF5722',h0:48,h1:72,tags:['Reset immunitario','Stem cells','Avanzato'],body:'<p>Oltre le 48-72 ore si attivano meccanismi di rigenerazione profondi con reset parziale del sistema immunitario.</p><p>Il prof. Valter Longo ha dimostrato che cicli periodici di digiuno prolungato possono rigenerare le cellule beta del pancreas.</p><p><strong>Attenzione:</strong> digiuni oltre 24-48 ore richiedono supervisione medica.</p>'}
-];
+/* ══════════════════════════════════════
+   PASSWORD — SHA-256
+   Hash della password "digiuno2026"
+   Per cambiarla: generare nuovo hash su
+   https://emn178.github.io/online-tools/sha256.html
+   ══════════════════════════════════════ */
+var PWD_HASH = "0facc911eeccc46dbb21f74e2464e6d5057b04581112358f3270193943b73597";
 
-var PROTOS = [
-  {id:'16_8',name:'16:8',tgt:16,desc:'Leangains'},
-  {id:'18_6',name:'18:6',tgt:18,desc:'Avanzato'},
-  {id:'20_4',name:'20:4',tgt:20,desc:'Warrior'},
-  {id:'24h',name:'24h',tgt:24,desc:'OMAD'},
-  {id:'36h',name:'36h',tgt:36,desc:'Alternate Day'},
-  {id:'free',name:'Libero',tgt:0,desc:'Nessun target'}
+async function hashPassword(pwd) {
+  var msgBuffer = new TextEncoder().encode(pwd);
+  var hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+  var hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(function(b){ return b.toString(16).padStart(2,"0"); }).join("");
+}
+
+function doLogin() {
+  var pwd = document.getElementById("pwdInput").value;
+  if(!pwd) { document.getElementById("loginErr").textContent = "Inserisci la password"; return; }
+  hashPassword(pwd).then(function(hash) {
+    if(hash === PWD_HASH) {
+      localStorage.setItem("ij_auth", hash);
+      document.getElementById("loginWrap").style.display = "none";
+      document.getElementById("appWrap").classList.add("visible");
+      initApp();
+    } else {
+      document.getElementById("loginErr").textContent = "Password errata";
+      document.getElementById("pwdInput").value = "";
+    }
+  });
+}
+
+function checkAuth() {
+  var stored = localStorage.getItem("ij_auth");
+  if(stored === PWD_HASH) {
+    document.getElementById("loginWrap").style.display = "none";
+    document.getElementById("appWrap").classList.add("visible");
+    initApp();
+  }
+}
+
+/* ══════════════════════════════════════
+   DATI
+   ══════════════════════════════════════ */
+var PHASES = [
+  {name:"Fase Anabolica",color:"#4CAF50",h0:0,h1:3,tags:["Insulina alta","Sintesi proteica","Glicogeno"],body:"<p>Dopo il pasto l'insulina e alta e il corpo e in modalita costruzione. Carboidrati e proteine vengono assorbiti e trasportati alle cellule.</p><p>Il glucosio in eccesso viene convertito in glicogeno nel fegato e nei muscoli. Gli aminoacidi stimolano la sintesi proteica muscolare.</p><p>Il corpo non brucia grassi: l'insulina alta inibisce la lipolisi.</p>"},
+  {name:"Fase Catabolica",color:"#FF9800",h0:3,h1:8,tags:["Glicogeno attivo","Insulina cala","Energia stabile"],body:"<p>L'insulina inizia a scendere e il corpo passa a bruciare le riserve di glicogeno per mantenere la glicemia stabile.</p><p>Verso le 6-8 ore il glicogeno epatico inizia ad esaurirsi. Il fegato aumenta la gluconeogenesi.</p><p>Si avverte una leggera fame ma i livelli di energia restano buoni.</p>"},
+  {name:"Brucia Grassi",color:"#F44336",h0:8,h1:16,tags:["Lipolisi attiva","Chetoni","Fame gestibile"],body:"<p>Con il glicogeno esaurito, l'insulina bassa sblocca la lipolisi: i trigliceridi vengono scissi in acidi grassi liberi.</p><p>Gli acidi grassi al fegato producono corpi chetonici. Intorno alle 12-14 ore molti riferiscono maggiore chiarezza mentale e calo della fame.</p>"},
+  {name:"Chetosi Leggera",color:"#9C27B0",h0:16,h1:24,tags:["Chetoni elevati","Chiarezza mentale","GH in aumento"],body:"<p>La chetosi diventa misurabile. Il cervello inizia a usare i chetoni come fonte energetica principale.</p><p>L'ormone della crescita (GH) sale fino a 5x i livelli basali, proteggendo la massa muscolare.</p><p>Benefici: riduzione infiammazione, miglioramento sensibilita insulinica, riduzione trigliceridi.</p>"},
+  {name:"Autofagia",color:"#2196F3",h0:24,h1:36,tags:["Riciclo cellulare","Anti-aging","Pulizia proteine"],body:"<p>L'autofagia e il processo con cui le cellule riciclano componenti danneggiati. E intensamente attiva a digiuno prolungato.</p><p>I lisosomi inglobano mitocondri difettosi e proteine aggregate. Fondamentale nella prevenzione di malattie neurodegenerative.</p><p>Nobel medicina 2016 a Yoshinori Ohsumi per le scoperte sull'autofagia.</p>"},
+  {name:"Picco Ormone Crescita",color:"#00BCD4",h0:36,h1:48,tags:["GH +2000%","Massa muscolare","Anti-aging"],body:"<p>Dopo 36-48 ore i livelli di GH possono aumentare del 1500-2000% rispetto ai livelli basali.</p><p>Il GH stimola la lipolisi, favorisce la sintesi proteica, migliora la densita ossea.</p><p>Si osserva anche un aumento della norepinefrina del 40%, con maggiore energia e focus mentale.</p>"},
+  {name:"Rigenerazione Cellulare",color:"#FF5722",h0:48,h1:72,tags:["Reset immunitario","Stem cells","Avanzato"],body:"<p>Oltre le 48-72 ore si attivano meccanismi di rigenerazione profondi con reset parziale del sistema immunitario.</p><p>Il prof. Valter Longo ha dimostrato che cicli periodici di digiuno prolungato possono rigenerare le cellule beta del pancreas.</p><p><strong>Attenzione:</strong> digiuni oltre 24-48 ore richiedono supervisione medica.</p>"}
 ];
 
 var PROTOCOLS_GUIDE = [
-  {
-    id:"cal",
-    name:"Piano di avvicinamento",
-    subtitle:"Per chi inizia da zero",
-    color:"#4CAF50",
-    icon:"ti-calendar",
-    tags:["Graduale","4 settimane","Per principianti"],
-    pros:"Approccio progressivo, permette al corpo di adattarsi senza stress.",
-    cons:"Richiede pazienza — i benefici completi arrivano nelle settimane finali.",
-    body:"<p>Un piano graduale su 4 settimane per abituare il corpo al digiuno intermittente:</p><p><strong>Settimana 1:</strong> 12 ore di digiuno ogni giorno (es. dalle 19:00 alle 7:00)</p><p><strong>Settimana 2:</strong> 14 ore nei giorni feriali, 12 ore nel weekend</p><p><strong>Settimana 3:</strong> 16 ore nei giorni feriali, 14 ore nel weekend</p><p><strong>Settimana 4:</strong> 16 ore ogni giorno della settimana</p><p>Tenersi impegnati e distrarsi mentalmente aiuta ad arrivare al momento del pasto senza difficolta.</p>"
-  },
-  {
-    id:"12_12",
-    name:"Protocollo 12:12",
-    subtitle:"12h digiuno - 12h alimentazione",
-    color:"#8BC34A",
-    icon:"ti-clock",
-    tags:["Principianti","Diabete tipo 1","Nessun pasto saltato"],
-    pros:"Approccio graduale, non richiede di saltare pasti, adatto anche a chi ha diabete di tipo 1.",
-    cons:"Benefici incompleti — la rigenerazione cellulare raggiunge il picco dopo 14 ore.",
-    body:"<p>Divide la giornata a meta: 12 ore di alimentazione e 12 di digiuno, la maggior parte delle quali coincidono con la notte.</p><p>Indicato per chi vuole iniziare il percorso meno drasticamente, senza dover saltare nessun pasto.</p><p><strong>Esempio orario:</strong></p><p>Colazione ore 8:30 &nbsp;|&nbsp; Pranzo ore 13:30 &nbsp;|&nbsp; Cena ore 20:00</p><p>La finestra di digiuno va dalle 20:00 alle 8:00 del mattino successivo.</p>"
-  },
-  {
-    id:"14_10",
-    name:"Protocollo 14:10",
-    subtitle:"14h digiuno - 10h alimentazione",
-    color:"#FF9800",
-    icon:"ti-clock",
-    tags:["Intermedio","Anti-infiammatorio","Flessibile"],
-    pros:"Si inizia gia a beneficiare dell'azione antinfiammatoria del digiuno.",
-    cons:"I benefici massimi si raggiungono con 16 ore, non con 14.",
-    body:"<p>Variante del 16:8, consigliata a chi e restio a stare 16 ore a digiuno o ha necessita specifiche di orario.</p><p>Con 14 ore di digiuno si ottiene gia l'azione antinfiammatoria, anche se il picco dei benefici si raggiunge con le 16 ore.</p><p>Buon compromesso per chi esce dal 12:12 e non si sente ancora pronto per il 16:8.</p>"
-  },
-  {
-    id:"16_8g",
-    name:"Protocollo 16:8",
-    subtitle:"16h digiuno - 8h alimentazione",
-    color:"#F44336",
-    icon:"ti-star",
-    tags:["Consigliato","Autofagia","Anti-infiammatorio"],
-    pros:"Azione antinfiammatoria completa, autofagia, dimagrimento, abbassamento glicemia colesterolo e pressione.",
-    cons:"Richiede di saltare un pasto (colazione o cena).",
-    body:"<p>Il protocollo piu diffuso e consigliato. Prevede 16 ore di digiuno e 8 ore di alimentazione.</p><p><strong>Con salto della colazione:</strong><br>Pranzo ore 13:00 &nbsp;|&nbsp; Spuntino ore 17:00 &nbsp;|&nbsp; Cena ore 20:30<br><em>Indicato a chi la mattina non ha fame o va di fretta.</em></p><p><strong>Con salto della cena:</strong><br>Colazione ore 8:00 &nbsp;|&nbsp; Pranzo ore 13:00 &nbsp;|&nbsp; Spuntino ore 15:30<br><em>Consigliato a chi ha reflusso o dorme male.</em></p><p>Durante le ore di digiuno: acqua, caffe, te o tisane senza zucchero.</p>"
-  },
-  {
-    id:"18_6g",
-    name:"Protocollo 18:6",
-    subtitle:"18h digiuno - 6h alimentazione",
-    color:"#9C27B0",
-    icon:"ti-clock",
-    tags:["Avanzato","Solo esperti"],
-    pros:"Azione completa del digiuno con tutti i benefici metabolici.",
-    cons:"Finestra alimentare ridotta — difficile assumere tutti i nutrienti necessari.",
-    body:"<p>Allungamento del digiuno rispetto al 16:8. Non e ancora scientificamente provato che i benefici siano maggiori rispetto alle 16 ore.</p><p>E consigliabile non superare le 18 ore: consumare tutto in poche ore potrebbe portare a carenze di macronutrienti e micronutrienti.</p><p>Adatto solo a chi ha gia esperienza con il 16:8.</p>"
-  },
-  {
-    id:"20_4g",
-    name:"Protocollo 20:4",
-    subtitle:"20h digiuno - 4h alimentazione",
-    color:"#FF5722",
-    icon:"ti-alert-triangle",
-    tags:["Sconsigliato ai principianti","Rischio carenze"],
-    pros:"Azione completa del digiuno.",
-    cons:"Finestra troppo corta, difficile alimentarsi in modo equilibrato, possibili attacchi di fame nervosa.",
-    body:"<p>Prevede solo 4 ore per alimentarsi. Il rischio principale e non riuscire ad assumere tutti i nutrienti necessari.</p><p>Puo scattare un meccanismo per cui, avendo poco tempo, si ingerisce qualsiasi cosa senza criterio, annullando i benefici del digiuno.</p><p><strong>Fortemente sconsigliato ai principianti.</strong></p>"
-  },
-  {
-    id:"omad",
-    name:"OMAD — One Meal A Day",
-    subtitle:"23h digiuno - 1h alimentazione",
-    color:"#795548",
-    icon:"ti-alert-triangle",
-    tags:["Non sostenibile","Solo occasionale","Sconsigliato"],
-    pros:"Soluzione comoda occasionalmente in giornate molto impegnative.",
-    cons:"Impossibile assumere tutti i nutrienti in un solo pasto, non sostenibile come stile di vita.",
-    body:"<p>Acronimo di One Meal A Day — un solo pasto al giorno. Equivale a un protocollo 23:1, molto restrittivo.</p><p>Il limite principale e non riuscire ad assumere tutti i macronutrienti e micronutrienti necessari con un solo pasto.</p><p>Puo essere seguito <strong>occasionalmente</strong> durante una giornata impegnativa, ma <strong>non e adatto a diventare uno stile di vita.</strong></p>"
-  }
+  {id:"cal",name:"Piano di avvicinamento",subtitle:"Per chi inizia da zero",color:"#4CAF50",icon:"ti-calendar",tags:["Graduale","4 settimane","Per principianti"],pros:"Approccio progressivo, permette al corpo di adattarsi senza stress.",cons:"Richiede pazienza — i benefici completi arrivano nelle settimane finali.",body:"<p>Un piano graduale su 4 settimane:</p><p><strong>Settimana 1:</strong> 12 ore di digiuno ogni giorno (es. 19:00 - 07:00)</p><p><strong>Settimana 2:</strong> 14 ore nei feriali, 12 ore nel weekend</p><p><strong>Settimana 3:</strong> 16 ore nei feriali, 14 ore nel weekend</p><p><strong>Settimana 4:</strong> 16 ore ogni giorno</p>"},
+  {id:"12_12",name:"Protocollo 12:12",subtitle:"12h digiuno - 12h alimentazione",color:"#8BC34A",icon:"ti-clock",tags:["Principianti","Diabete tipo 1","Nessun pasto saltato"],pros:"Approccio graduale, non richiede di saltare pasti, adatto anche a chi ha diabete di tipo 1.",cons:"Benefici incompleti — la rigenerazione cellulare raggiunge il picco dopo 14 ore.",body:"<p>Divide la giornata a meta: 12 ore di alimentazione e 12 di digiuno, la maggior parte delle quali coincidono con la notte.</p><p><strong>Esempio orario:</strong> Colazione 8:30 - Pranzo 13:30 - Cena 20:00</p><p>La finestra di digiuno va dalle 20:00 alle 8:00 del mattino successivo.</p>"},
+  {id:"14_10",name:"Protocollo 14:10",subtitle:"14h digiuno - 10h alimentazione",color:"#FF9800",icon:"ti-clock",tags:["Intermedio","Anti-infiammatorio","Flessibile"],pros:"Si inizia a beneficiare dell'azione antinfiammatoria del digiuno.",cons:"I benefici massimi si raggiungono con 16 ore, non con 14.",body:"<p>Variante del 16:8, consigliata a chi e restio a stare 16 ore a digiuno o ha necessita specifiche di orario.</p><p>Con 14 ore si ottiene gia l'azione antinfiammatoria, anche se il picco dei benefici si raggiunge con le 16 ore.</p>"},
+  {id:"16_8g",name:"Protocollo 16:8",subtitle:"16h digiuno - 8h alimentazione",color:"#F44336",icon:"ti-star",tags:["Consigliato","Autofagia","Anti-infiammatorio"],pros:"Azione antinfiammatoria completa, autofagia, dimagrimento, abbassamento glicemia colesterolo e pressione.",cons:"Richiede di saltare un pasto (colazione o cena).",body:"<p>Il protocollo piu diffuso e consigliato. 16 ore di digiuno e 8 ore di alimentazione.</p><p><strong>Con salto della colazione:</strong> Pranzo 13:00 - Spuntino 17:00 - Cena 20:30. Indicato a chi la mattina non ha fame.</p><p><strong>Con salto della cena:</strong> Colazione 8:00 - Pranzo 13:00 - Spuntino 15:30. Consigliato a chi ha reflusso o dorme male.</p><p>Durante il digiuno: acqua, caffe, te o tisane senza zucchero.</p>"},
+  {id:"18_6g",name:"Protocollo 18:6",subtitle:"18h digiuno - 6h alimentazione",color:"#9C27B0",icon:"ti-clock",tags:["Avanzato","Solo esperti"],pros:"Azione completa del digiuno con tutti i benefici metabolici.",cons:"Finestra alimentare ridotta — difficile assumere tutti i nutrienti necessari.",body:"<p>Allungamento del digiuno rispetto al 16:8. Non e ancora provato che i benefici siano maggiori rispetto alle 16 ore.</p><p>Consigliabile non superare le 18 ore. Adatto solo a chi ha gia esperienza con il 16:8.</p>"},
+  {id:"20_4g",name:"Protocollo 20:4",subtitle:"20h digiuno - 4h alimentazione",color:"#FF5722",icon:"ti-alert-triangle",tags:["Sconsigliato ai principianti","Rischio carenze"],pros:"Azione completa del digiuno.",cons:"Finestra troppo corta, difficile alimentarsi in modo equilibrato, possibili attacchi di fame nervosa.",body:"<p>Solo 4 ore per alimentarsi. Rischio di non assumere tutti i nutrienti necessari.</p><p><strong>Fortemente sconsigliato ai principianti.</strong> Puo portare ad attacchi di fame nervosa.</p>"},
+  {id:"omad",name:"OMAD - One Meal A Day",subtitle:"23h digiuno - 1h alimentazione",color:"#795548",icon:"ti-alert-triangle",tags:["Non sostenibile","Solo occasionale","Sconsigliato"],pros:"Soluzione comoda occasionalmente in giornate molto impegnative.",cons:"Impossibile assumere tutti i nutrienti in un solo pasto, non sostenibile come stile di vita.",body:"<p>Un solo pasto al giorno. Equivale a un protocollo 23:1, molto restrittivo.</p><p>Puo essere seguito occasionalmente, ma <strong>non e adatto a diventare uno stile di vita.</strong></p>"}
+];
+
+var PROTOS = [
+  {id:"16_8",name:"16:8",tgt:16,desc:"Leangains"},
+  {id:"18_6",name:"18:6",tgt:18,desc:"Avanzato"},
+  {id:"20_4",name:"20:4",tgt:20,desc:"Warrior"},
+  {id:"24h",name:"24h",tgt:24,desc:"OMAD"},
+  {id:"36h",name:"36h",tgt:36,desc:"Alternate Day"},
+  {id:"free",name:"Libero",tgt:0,desc:"Nessun target"}
 ];
 
 var TIPS = [
-  {ico:'ti-droplet',t:'Bevi almeno 2-3 litri d\'acqua al giorno durante il digiuno. Aiuta a gestire la fame e mantiene l\'energia.'},
-  {ico:'ti-coffee',t:'Caffè e tè non zuccherati sono consentiti e possono aiutare a gestire la fame nelle prime ore.'},
-  {ico:'ti-zzz',t:'Inizia il digiuno la sera dopo cena: dormirai buona parte del tempo senza sentire la fame.'},
-  {ico:'ti-run',t:'L\'allenamento nelle ultime ore del digiuno può aumentare la lipolisi, ma attenzione all\'intensità.'},
-  {ico:'ti-salt',t:'Sodio, potassio e magnesio sono importanti nei digiuni prolungati. Un pizzico di sale nell\'acqua aiuta.'},
-  {ico:'ti-mood-smile',t:'La fame arriva a ondate e passa. Se senti fame aspetta 20 minuti: spesso scompare da sola.'}
+  {ico:"ti-droplet",t:"Bevi almeno 2-3 litri di acqua al giorno durante il digiuno. Aiuta a gestire la fame e mantiene l'energia."},
+  {ico:"ti-coffee",t:"Caffe e te non zuccherati sono consentiti e possono aiutare a gestire la fame nelle prime ore."},
+  {ico:"ti-zzz",t:"Inizia il digiuno la sera dopo cena: dormirai buona parte del tempo senza sentire la fame."},
+  {ico:"ti-run",t:"L'allenamento nelle ultime ore del digiuno puo aumentare la lipolisi, ma attenzione all'intensita."},
+  {ico:"ti-salt",t:"Sodio, potassio e magnesio sono importanti nei digiuni prolungati. Un pizzico di sale nell'acqua aiuta."},
+  {ico:"ti-mood-smile",t:"La fame arriva a ondate e passa. Se senti fame aspetta 20 minuti: spesso scompare da sola."}
 ];
 
-function pad(n) { return String(n).padStart(2,'0'); }
-function todayKey() { var d = new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
-function fmtDT(d) { return pad(d.getDate())+'/'+pad(d.getMonth()+1)+' '+pad(d.getHours())+':'+pad(d.getMinutes()); }
-function fmtD(d) { return pad(d.getDate())+'/'+pad(d.getMonth()+1)+'/'+d.getFullYear(); }
+/* ══════════════════════════════════════
+   STATE
+   ══════════════════════════════════════ */
+function pad(n) { return String(n).padStart(2,"0"); }
+function todayKey() { var d=new Date(); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+function fmtDT(d) { return pad(d.getDate())+"/"+pad(d.getMonth()+1)+" "+pad(d.getHours())+":"+pad(d.getMinutes()); }
+function fmtD(d) { return pad(d.getDate())+"/"+pad(d.getMonth()+1)+"/"+d.getFullYear(); }
 function getPhase(h) { for(var i=PHASES.length-1;i>=0;i--) { if(h>=PHASES[i].h0) return PHASES[i]; } return PHASES[0]; }
 function getProto() { for(var i=0;i<PROTOS.length;i++) { if(PROTOS[i].id===proto) return PROTOS[i]; } return PROTOS[0]; }
-function showToast(msg) { var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); },2500); }
+function showToast(msg) { var t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); setTimeout(function(){ t.classList.remove("show"); },2500); }
 
-var fasts   = JSON.parse(localStorage.getItem('ij_fasts')  || '[]');
-var active  = JSON.parse(localStorage.getItem('ij_active') || 'null');
-var water   = JSON.parse(localStorage.getItem('ij_water')  || '{}');
-var wGoal   = parseInt(localStorage.getItem('ij_wgoal')    || '2000');
-var weights = JSON.parse(localStorage.getItem('ij_weight') || '[]');
-var diary   = JSON.parse(localStorage.getItem('ij_diary')  || '[]');
-var proto   = localStorage.getItem('ij_proto') || '16_8';
-var wDate   = todayKey();
-var dR      = {en:0,fa:0,um:0};
-var tInt    = null;
-var fChartInst = null;
-var wChartInst = null;
-var ML = 250;
-var MAXC = 12;
+var fasts, active, water, wGoal, weights, diary, proto, wDate, dR, tInt, fChartInst, wChartInst, ML, MAXC, TABS;
 
-var TABS = ['fase','acqua','diario','peso','storico','guida'];
+function initApp() {
+  fasts   = JSON.parse(localStorage.getItem("ij_fasts")  || "[]");
+  active  = JSON.parse(localStorage.getItem("ij_active") || "null");
+  water   = JSON.parse(localStorage.getItem("ij_water")  || "{}");
+  wGoal   = parseInt(localStorage.getItem("ij_wgoal")    || "2000");
+  weights = JSON.parse(localStorage.getItem("ij_weight") || "[]");
+  diary   = JSON.parse(localStorage.getItem("ij_diary")  || "[]");
+  proto   = localStorage.getItem("ij_proto") || "16_8";
+  wDate   = todayKey();
+  dR      = {en:0,fa:0,um:0};
+  tInt    = null;
+  fChartInst = null;
+  wChartInst = null;
+  ML   = 250;
+  MAXC = 12;
+  TABS = ["fase","acqua","diario","peso","storico","guida"];
 
-function goTab(name) {
-  var tabs = document.querySelectorAll('.tab');
-  var secs = document.querySelectorAll('.sec');
-  for(var i=0;i<tabs.length;i++) tabs[i].classList.toggle('active', TABS[i]===name);
-  for(var i=0;i<secs.length;i++) secs[i].classList.remove('active');
-  document.getElementById('tab-'+name).classList.add('active');
-  if(name==='fase')    renderFase();
-  if(name==='acqua')   renderWater();
-  if(name==='diario')  renderDiary();
-  if(name==='peso')    renderPeso();
-  if(name==='storico') renderStorico();
-  if(name==='guida')   renderGuida();
+  var n = new Date();
+  document.getElementById("sDate").value = n.getFullYear()+"-"+pad(n.getMonth()+1)+"-"+pad(n.getDate());
+  document.getElementById("sTime").value = pad(n.getHours())+":"+pad(n.getMinutes());
+  document.getElementById("wDateSel").value = wDate;
+
+  renderFase();
+  renderWater();
 }
 
-/* FAST */
+/* ══════════════════════════════════════
+   TABS
+   ══════════════════════════════════════ */
+function goTab(name) {
+  var tabs = document.querySelectorAll(".tab");
+  var secs = document.querySelectorAll(".sec");
+  for(var i=0;i<tabs.length;i++) tabs[i].classList.toggle("active", TABS[i]===name);
+  for(var i=0;i<secs.length;i++) secs[i].classList.remove("active");
+  document.getElementById("tab-"+name).classList.add("active");
+  if(name==="fase")    renderFase();
+  if(name==="acqua")   renderWater();
+  if(name==="diario")  renderDiary();
+  if(name==="peso")    renderPeso();
+  if(name==="storico") renderStorico();
+  if(name==="guida")   renderGuida();
+}
+
+/* ══════════════════════════════════════
+   FAST
+   ══════════════════════════════════════ */
 function saveFast() {
-  var sd=document.getElementById('sDate').value, st=document.getElementById('sTime').value;
-  var ed=document.getElementById('eDate').value, et=document.getElementById('eTime').value;
-  var note=document.getElementById('fNote').value.trim();
-  if(!sd||!st) { showToast('Inserisci data e ora di inizio'); return; }
-  var start=new Date(sd+'T'+st);
-  var end=(ed&&et)?new Date(ed+'T'+et):null;
-  if(end&&end<=start) { showToast('La fine deve essere dopo l\'inizio'); return; }
+  var sd=document.getElementById("sDate").value, st=document.getElementById("sTime").value;
+  var ed=document.getElementById("eDate").value, et=document.getElementById("eTime").value;
+  var note=document.getElementById("fNote").value.trim();
+  if(!sd||!st) { showToast("Inserisci data e ora di inizio"); return; }
+  var start=new Date(sd+"T"+st);
+  var end=(ed&&et)?new Date(ed+"T"+et):null;
+  if(end&&end<=start) { showToast("La fine deve essere dopo l'inizio"); return; }
   if(!end) {
     active={start:start.toISOString(),id:Date.now(),note:note};
-    localStorage.setItem('ij_active',JSON.stringify(active));
-    showToast('Digiuno avviato!');
-    goTab('fase');
+    localStorage.setItem("ij_active",JSON.stringify(active));
+    showToast("Digiuno avviato!"); goTab("fase");
   } else {
     var dur=(end-start)/3600000;
-    var startKey=sd; // use start date for water lookup
-    fasts.unshift({id:Date.now(),start:start.toISOString(),end:end.toISOString(),durationH:dur,cups:water[startKey]||0,note:note});
-    localStorage.setItem('ij_fasts',JSON.stringify(fasts));
-    showToast('Salvato: '+dur.toFixed(1)+'h');
+    fasts.unshift({id:Date.now(),start:start.toISOString(),end:end.toISOString(),durationH:dur,cups:water[sd]||0,note:note});
+    localStorage.setItem("ij_fasts",JSON.stringify(fasts));
+    showToast("Salvato: "+dur.toFixed(1)+"h");
   }
-  document.getElementById('sDate').value='';
-  document.getElementById('sTime').value='';
-  document.getElementById('eDate').value='';
-  document.getElementById('eTime').value='';
-  document.getElementById('fNote').value='';
+  document.getElementById("sDate").value="";
+  document.getElementById("sTime").value="";
+  document.getElementById("eDate").value="";
+  document.getElementById("eTime").value="";
+  document.getElementById("fNote").value="";
 }
 
 function endNow() {
   if(!active) return;
   var start=new Date(active.start), end=new Date(), dur=(end-start)/3600000;
-  var activeStartKey=active.start.substring(0,10);
-  fasts.unshift({id:active.id,start:active.start,end:end.toISOString(),durationH:dur,cups:water[activeStartKey]||0,note:active.note||''});
-  localStorage.setItem('ij_fasts',JSON.stringify(fasts));
-  active=null; localStorage.removeItem('ij_active');
+  var startKey=active.start.substring(0,10);
+  fasts.unshift({id:active.id,start:active.start,end:end.toISOString(),durationH:dur,cups:water[startKey]||0,note:active.note||""});
+  localStorage.setItem("ij_fasts",JSON.stringify(fasts));
+  active=null; localStorage.removeItem("ij_active");
   clearInterval(tInt);
-  showToast('Completato: '+dur.toFixed(1)+'h');
-  renderFase();
+  showToast("Completato: "+dur.toFixed(1)+"h"); renderFase();
 }
 
 function cancelFast() {
-  if(!confirm('Annullare il digiuno attivo?')) return;
-  active=null; localStorage.removeItem('ij_active');
+  if(!confirm("Annullare il digiuno attivo?")) return;
+  active=null; localStorage.removeItem("ij_active");
   clearInterval(tInt); renderFase();
 }
 
 function setNow() {
   var n=new Date();
-  document.getElementById('sDate').value=n.getFullYear()+'-'+pad(n.getMonth()+1)+'-'+pad(n.getDate());
-  document.getElementById('sTime').value=pad(n.getHours())+':'+pad(n.getMinutes());
+  document.getElementById("sDate").value=n.getFullYear()+"-"+pad(n.getMonth()+1)+"-"+pad(n.getDate());
+  document.getElementById("sTime").value=pad(n.getHours())+":"+pad(n.getMinutes());
 }
 
 function renderFase() {
-  var noEl=document.getElementById('nofast'), ui=document.getElementById('fastui');
-  if(!active) { clearInterval(tInt); noEl.style.display=''; ui.style.display='none'; return; }
-  noEl.style.display='none'; ui.style.display='';
+  var noEl=document.getElementById("nofast"), ui=document.getElementById("fastui");
+  if(!active) { clearInterval(tInt); noEl.style.display=""; ui.style.display="none"; return; }
+  noEl.style.display="none"; ui.style.display="";
   clearInterval(tInt); tInt=setInterval(tickTimer,1000); tickTimer();
 }
 
@@ -568,88 +589,94 @@ function tickTimer() {
   if(!active) return;
   var start=new Date(active.start), now=new Date(), diff=now-start;
   var h=Math.floor(diff/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
-  document.getElementById('timerBig').textContent=pad(h)+':'+pad(m)+':'+pad(s);
-  document.getElementById('timerSub').textContent='iniziato il '+fmtDT(start);
+  document.getElementById("timerBig").textContent=pad(h)+":"+pad(m)+":"+pad(s);
+  document.getElementById("timerSub").textContent="iniziato il "+fmtDT(start);
   var hrs=diff/3600000, ph=getPhase(hrs), pr=getProto();
   if(pr.tgt>0) {
     var pct=Math.min(100,Math.round(hrs/pr.tgt*100));
-    document.getElementById('tgtLbl').textContent='Obiettivo '+pr.name+' ('+pr.tgt+'h)';
-    document.getElementById('tgtPct').textContent=pct+'%';
-    document.getElementById('tFill').style.width=pct+'%';
-    document.getElementById('tFill').style.background=pct>=100?'var(--grn)':ph.color;
-    document.getElementById('tgtBlock').style.display='';
+    document.getElementById("tgtLbl").textContent="Obiettivo "+pr.name+" ("+pr.tgt+"h)";
+    document.getElementById("tgtPct").textContent=pct+"%";
+    document.getElementById("tFill").style.width=pct+"%";
+    document.getElementById("tFill").style.background=pct>=100?"var(--grn)":ph.color;
+    document.getElementById("tgtBlock").style.display="";
   } else {
-    document.getElementById('tgtBlock').style.display='none';
+    document.getElementById("tgtBlock").style.display="none";
   }
-  document.getElementById('pDot').style.background=ph.color;
-  document.getElementById('pName').textContent=ph.name;
-  document.getElementById('pDesc').textContent=ph.tags.join(' · ');
-  document.getElementById('pFill').style.width=Math.min(100,(hrs/48)*100)+'%';
-  document.getElementById('pFill').style.background=ph.color;
-  var tl=document.getElementById('phaseTl');
+  document.getElementById("pDot").style.background=ph.color;
+  document.getElementById("pName").textContent=ph.name;
+  document.getElementById("pDesc").textContent=ph.tags.join(" · ");
+  document.getElementById("pFill").style.width=Math.min(100,(hrs/48)*100)+"%";
+  document.getElementById("pFill").style.background=ph.color;
+  var tl=document.getElementById("phaseTl");
   tl.innerHTML='<div style="font-size:12px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Fasi metaboliche</div>';
   for(var i=0;i<PHASES.length;i++) {
     var ph2=PHASES[i], reached=hrs>=ph2.h0, cur=hrs>=ph2.h0&&hrs<ph2.h1;
-    var row=document.createElement('div'); row.className='phrow'+(reached?'':' dim');
-    row.innerHTML='<div class="phdot" style="background:'+(reached?ph2.color:'var(--brm)')+'"></div>'+
+    var row=document.createElement("div"); row.className="phrow"+(reached?"":" dim");
+    row.innerHTML='<div class="phdot" style="background:'+(reached?ph2.color:"var(--brm)")+'"></div>'+
       '<div style="flex:1"><div class="phname">'+ph2.name+(cur?' <span style="color:var(--blue);font-size:11px">← ora</span>':'')+'</div>'+
-      '<div class="phhrs">'+ph2.h0+'h–'+ph2.h1+'h</div></div>'+
-      (reached?'<i class="ti ti-check" style="color:var(--grn);font-size:16px"></i>':'<span style="font-size:11px;color:var(--t3)">'+ph2.h0+'h</span>');
+      '<div class="phhrs">'+ph2.h0+"h–"+ph2.h1+"h</div></div>"+
+      (reached?'<i class="ti ti-check" style="color:var(--grn);font-size:16px"></i>':'<span style="font-size:11px;color:var(--t3)">'+ph2.h0+"h</span>");
     tl.appendChild(row);
   }
 }
 
-/* PROTOCOL */
+/* ══════════════════════════════════════
+   PROTOCOL
+   ══════════════════════════════════════ */
 function renderProtocols() {
-  var html='';
+  var html="";
   for(var i=0;i<PROTOS.length;i++) {
     var pr=PROTOS[i];
-    html+='<button class="proto'+(pr.id===proto?' active':'')+'" onclick="setProto(\''+pr.id+'\')"><div class="pn">'+pr.name+'</div><div class="pd">'+pr.desc+'</div></button>';
+    html+='<button class="proto'+(pr.id===proto?" active":"")+'" onclick="setProto(\''+pr.id+'\')"><div class="pn">'+pr.name+"</div><div class='pd'>"+pr.desc+"</div></button>";
   }
-  document.getElementById('protoGrid').innerHTML=html;
+  document.getElementById("protoGrid").innerHTML=html;
 }
-function setProto(id) { proto=id; localStorage.setItem('ij_proto',id); renderProtocols(); if(active) tickTimer(); showToast('Protocollo: '+getProto().name); }
+function setProto(id) { proto=id; localStorage.setItem("ij_proto",id); renderProtocols(); if(active) tickTimer(); showToast("Protocollo: "+getProto().name); }
 
-/* WATER */
-function setWaterToday() { wDate=todayKey(); document.getElementById('wDateSel').value=wDate; renderWater(); }
-function onWaterDate() { wDate=document.getElementById('wDateSel').value||todayKey(); renderWater(); }
-function addCup() { var c=water[wDate]||0; if(c>=MAXC){showToast('Massimo '+MAXC+' bicchieri');return;} water[wDate]=c+1; localStorage.setItem('ij_water',JSON.stringify(water)); renderWater(); }
-function removeCup() { if(!water[wDate]) return; water[wDate]=Math.max(0,water[wDate]-1); localStorage.setItem('ij_water',JSON.stringify(water)); renderWater(); }
-function updateGoal() { wGoal=parseInt(document.getElementById('goalInp').value)||2000; localStorage.setItem('ij_wgoal',wGoal); renderWater(); }
+/* ══════════════════════════════════════
+   WATER
+   ══════════════════════════════════════ */
+function setWaterToday() { wDate=todayKey(); document.getElementById("wDateSel").value=wDate; renderWater(); }
+function onWaterDate() { wDate=document.getElementById("wDateSel").value||todayKey(); renderWater(); }
+function addCup() { var c=water[wDate]||0; if(c>=MAXC){showToast("Massimo "+MAXC+" bicchieri");return;} water[wDate]=c+1; localStorage.setItem("ij_water",JSON.stringify(water)); renderWater(); }
+function removeCup() { if(!water[wDate]) return; water[wDate]=Math.max(0,water[wDate]-1); localStorage.setItem("ij_water",JSON.stringify(water)); renderWater(); }
+function updateGoal() { wGoal=parseInt(document.getElementById("goalInp").value)||2000; localStorage.setItem("ij_wgoal",wGoal); renderWater(); }
 
 function renderWater() {
   var cups=water[wDate]||0, ml=cups*ML, pct=Math.min(100,Math.round(ml/wGoal*100));
-  document.getElementById('cupCount').textContent=cups;
-  document.getElementById('cupSub').textContent=(wDate===todayKey()?'Oggi: ':wDate+': ')+ml+' ml di '+wGoal+' ml — '+pct+'%';
-  document.getElementById('wProg').style.width=pct+'%';
-  document.getElementById('goalInp').value=wGoal;
-  var grid=document.getElementById('cupGrid'); grid.innerHTML='';
+  document.getElementById("cupCount").textContent=cups;
+  document.getElementById("cupSub").textContent=(wDate===todayKey()?"Oggi: ":wDate+": ")+ml+" ml di "+wGoal+" ml — "+pct+"%";
+  document.getElementById("wProg").style.width=pct+"%";
+  document.getElementById("goalInp").value=wGoal;
+  var grid=document.getElementById("cupGrid"); grid.innerHTML="";
   for(var i=0;i<MAXC;i++) {
-    var b=document.createElement('button'); b.className='cupbtn'+(i<cups?' on':'');
+    var b=document.createElement("button"); b.className="cupbtn"+(i<cups?" on":"");
     b.innerHTML='<i class="ti ti-glass-full"></i>';
     (function(idx){ b.onclick=function(){ if(idx<(water[wDate]||0)) removeCup(); else addCup(); }; })(i);
     grid.appendChild(b);
   }
-  var hist=document.getElementById('wHist'), now=new Date(), html='';
+  var hist=document.getElementById("wHist"), now=new Date(), html="";
   for(var i=13;i>=0;i--) {
     var d=new Date(now); d.setDate(d.getDate()-i);
-    var k=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+    var k=d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
     var dc=water[k]||0, pc=Math.min(100,Math.round(dc*ML/wGoal*100)), ok=pc>=100;
-    html+='<div class="whr"><span style="width:42px;color:var(--t2);font-size:11px;flex-shrink:0">'+pad(d.getDate())+'/'+pad(d.getMonth()+1)+'</span>'+
+    html+='<div class="whr"><span style="width:42px;color:var(--t2);font-size:11px;flex-shrink:0">'+pad(d.getDate())+"/"+pad(d.getMonth()+1)+"</span>"+
       '<div style="flex:1;height:5px;background:var(--bg2);border-radius:999px;overflow:hidden">'+
-      '<div style="height:100%;width:'+pc+'%;background:'+(ok?'var(--grn)':'var(--blue)')+';border-radius:999px"></div></div>'+
-      '<span style="width:32px;text-align:right;font-weight:500;color:var(--t1);font-size:12px">'+dc+'</span>'+
-      '<span style="width:16px;text-align:center;font-size:13px">'+(ok?'✓':'')+'</span></div>';
+      '<div style="height:100%;width:'+pc+"%;background:"+(ok?"var(--grn)":"var(--blue)")+';border-radius:999px"></div></div>'+
+      '<span style="width:32px;text-align:right;font-weight:500;color:var(--t1);font-size:12px">'+dc+"</span>"+
+      '<span style="width:16px;text-align:center;font-size:13px">'+(ok?"✓":"")+"</span></div>";
   }
   hist.innerHTML=html;
 }
 
-/* DIARY */
+/* ══════════════════════════════════════
+   DIARY
+   ══════════════════════════════════════ */
 function renderStars(elId, key) {
-  var el=document.getElementById(elId); el.innerHTML='';
-  var em=['😞','😐','😊','😄','🤩'];
+  var el=document.getElementById(elId); el.innerHTML="";
+  var em=["😞","😐","😊","😄","🤩"];
   for(var i=1;i<=5;i++) {
-    var b=document.createElement('button'); b.className='stbtn'+(dR[key]>=i?' on':'');
+    var b=document.createElement("button"); b.className="stbtn"+(dR[key]>=i?" on":"");
     b.textContent=em[i-1];
     (function(v,k,id){ b.onclick=function(){ dR[k]=v; renderStars(id,k); }; })(i,key,elId);
     el.appendChild(b);
@@ -657,85 +684,88 @@ function renderStars(elId, key) {
 }
 
 function renderDiary() {
-  renderStars('stEn','en'); renderStars('stFa','fa'); renderStars('stUm','um');
-  var list=document.getElementById('dList'), em=['😞','😐','😊','😄','🤩'], html='';
+  renderStars("stEn","en"); renderStars("stFa","fa"); renderStars("stUm","um");
+  var list=document.getElementById("dList"), em=["😞","😐","😊","😄","🤩"], html="";
   var items=diary.slice(0,7);
   if(!items.length) { list.innerHTML='<div class="empty" style="padding:16px"><i class="ti ti-mood-smile"></i>Nessuna voce ancora.</div>'; return; }
   for(var i=0;i<items.length;i++) {
     var e=items[i];
-    html+='<div class="we"><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--t1)">'+e.date+'</div>'+
-      '<div style="font-size:12px;color:var(--t2);margin-top:2px">⚡'+em[(e.en||1)-1]+' 🍽'+em[(e.fa||1)-1]+' 😊'+em[(e.um||1)-1]+
-      (e.note?' <span style="margin-left:5px;font-style:italic">'+e.note.substring(0,40)+'</span>':'')+'</div></div></div>';
+    html+='<div class="we"><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--t1)">'+e.date+"</div>"+
+      '<div style="font-size:12px;color:var(--t2);margin-top:2px">⚡'+em[(e.en||1)-1]+" 🍽"+em[(e.fa||1)-1]+" 😊"+em[(e.um||1)-1]+
+      (e.note?' <span style="margin-left:5px;font-style:italic">'+e.note.substring(0,40)+"</span>":"")+"</div></div></div>";
   }
   list.innerHTML=html;
 }
 
 function saveDiary() {
-  var note=document.getElementById('dNote').value.trim();
+  var note=document.getElementById("dNote").value.trim();
   var entry={date:todayKey(),en:dR.en,fa:dR.fa,um:dR.um,note:note};
   var idx=-1;
   for(var i=0;i<diary.length;i++) { if(diary[i].date===todayKey()) { idx=i; break; } }
   if(idx>=0) diary[idx]=entry; else diary.unshift(entry);
-  localStorage.setItem('ij_diary',JSON.stringify(diary));
-  showToast('Diario salvato!'); dR={en:0,fa:0,um:0};
-  document.getElementById('dNote').value=''; renderDiary();
+  localStorage.setItem("ij_diary",JSON.stringify(diary));
+  showToast("Diario salvato!"); dR={en:0,fa:0,um:0};
+  document.getElementById("dNote").value=""; renderDiary();
 }
 
-/* WEIGHT */
-function setWdNow() { var n=new Date(); document.getElementById('wDate').value=n.getFullYear()+'-'+pad(n.getMonth()+1)+'-'+pad(n.getDate()); }
+/* ══════════════════════════════════════
+   WEIGHT
+   ══════════════════════════════════════ */
+function setWdNow() { var n=new Date(); document.getElementById("wDate").value=n.getFullYear()+"-"+pad(n.getMonth()+1)+"-"+pad(n.getDate()); }
 function saveWeight() {
-  var d=document.getElementById('wDate').value, v=parseFloat(document.getElementById('wVal').value);
-  if(!d||isNaN(v)||v<30||v>300) { showToast('Inserisci data e peso valido'); return; }
+  var d=document.getElementById("wDate").value, v=parseFloat(document.getElementById("wVal").value);
+  if(!d||isNaN(v)||v<30||v>300) { showToast("Inserisci data e peso valido"); return; }
   var idx=-1;
   for(var i=0;i<weights.length;i++) { if(weights[i].date===d) { idx=i; break; } }
   if(idx>=0) weights[idx].kg=v; else weights.push({date:d,kg:v});
   weights.sort(function(a,b){ return a.date.localeCompare(b.date); });
-  localStorage.setItem('ij_weight',JSON.stringify(weights));
-  showToast('Peso salvato: '+v+' kg'); document.getElementById('wVal').value=''; renderPeso();
+  localStorage.setItem("ij_weight",JSON.stringify(weights));
+  showToast("Peso salvato: "+v+" kg"); document.getElementById("wVal").value=""; renderPeso();
 }
 function delWeight(date) {
   var nw=[];
   for(var i=0;i<weights.length;i++) { if(weights[i].date!==date) nw.push(weights[i]); }
-  weights=nw; localStorage.setItem('ij_weight',JSON.stringify(weights)); renderPeso();
+  weights=nw; localStorage.setItem("ij_weight",JSON.stringify(weights)); renderPeso();
 }
 function renderPeso() {
   setWdNow();
-  var list=document.getElementById('wList');
+  var list=document.getElementById("wList");
   if(!weights.length) { list.innerHTML='<div class="empty" style="padding:16px"><i class="ti ti-scale"></i>Nessun peso registrato.</div>'; renderWChart([]); return; }
-  var rev=[].concat(weights).reverse().slice(0,20), html='';
+  var rev=[].concat(weights).reverse().slice(0,20), html="";
   for(var i=0;i<rev.length;i++) {
     var w=rev[i], prev=rev[i+1], diff=prev?w.kg-prev.kg:null;
-    var ds=diff!==null?(diff>0?'<span style="color:var(--red)">▲'+Math.abs(diff).toFixed(1)+'</span>':'<span style="color:var(--grn)">▼'+Math.abs(diff).toFixed(1)+'</span>'):'';
-    html+='<div class="we"><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--t1)">'+w.date+'</div></div>'+
-      '<div style="font-size:16px;font-weight:600;color:var(--t1)">'+w.kg+' kg</div>'+
-      '<div style="font-size:12px;min-width:36px;text-align:right">'+ds+'</div>'+
+    var ds=diff!==null?(diff>0?'<span style="color:var(--red)">▲'+Math.abs(diff).toFixed(1)+"</span>":'<span style="color:var(--grn)">▼'+Math.abs(diff).toFixed(1)+"</span>"):"";
+    html+='<div class="we"><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--t1)">'+w.date+"</div></div>"+
+      '<div style="font-size:16px;font-weight:600;color:var(--t1)">'+w.kg+" kg</div>"+
+      '<div style="font-size:12px;min-width:36px;text-align:right">'+ds+"</div>"+
       '<button class="hibtn" onclick="delWeight(\''+w.date+'\')" style="color:var(--t3)"><i class="ti ti-trash"></i></button></div>';
   }
   list.innerHTML=html;
   renderWChart(weights);
 }
 function renderWChart(data) {
-  var ctx=document.getElementById('wChart');
+  var ctx=document.getElementById("wChart");
   if(wChartInst) { wChartInst.destroy(); wChartInst=null; }
-  if(data.length<2) { ctx.style.display='none'; return; }
-  ctx.style.display=''; ctx.style.width='100%'; ctx.style.height='180px';
-  var dark=matchMedia('(prefers-color-scheme:dark)').matches;
-  var tc=dark?'#9c9a92':'#73726c', gc=dark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)';
+  if(data.length<2) { ctx.style.display="none"; return; }
+  ctx.style.display=""; ctx.style.width="100%"; ctx.style.height="180px";
+  var dark=matchMedia("(prefers-color-scheme:dark)").matches;
+  var tc=dark?"#9c9a92":"#73726c", gc=dark?"rgba(255,255,255,0.06)":"rgba(0,0,0,0.06)";
   var rec=data.slice(-20);
-  wChartInst=new Chart(ctx,{type:'line',data:{
-    labels:rec.map(function(w){ var p=w.date.split('-'); return p[2]+'/'+p[1]; }),
-    datasets:[{data:rec.map(function(w){ return w.kg; }),borderColor:'#178DD8',backgroundColor:'rgba(23,141,216,0.08)',borderWidth:2,pointRadius:4,pointBackgroundColor:'#178DD8',fill:true,tension:0.3}]
+  wChartInst=new Chart(ctx,{type:"line",data:{
+    labels:rec.map(function(w){ var p=w.date.split("-"); return p[2]+"/"+p[1]; }),
+    datasets:[{data:rec.map(function(w){ return w.kg; }),borderColor:"#178DD8",backgroundColor:"rgba(23,141,216,0.08)",borderWidth:2,pointRadius:4,pointBackgroundColor:"#178DD8",fill:true,tension:0.3}]
   },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
   scales:{x:{ticks:{color:tc,font:{size:10},maxRotation:45},grid:{color:gc},border:{display:false}},
-  y:{ticks:{color:tc,font:{size:10},callback:function(v){return v+'kg';}},grid:{color:gc},border:{display:false}}}}});
+  y:{ticks:{color:tc,font:{size:10},callback:function(v){return v+"kg";}},grid:{color:gc},border:{display:false}}}}});
 }
 
-/* STORICO */
+/* ══════════════════════════════════════
+   STORICO
+   ══════════════════════════════════════ */
 function renderStorico() {
-  renderProtocols();
-  renderStreak();
-  var list=document.getElementById('histList'), stats=document.getElementById('statsRow');
-  if(!fasts.length) { list.innerHTML='<div class="empty"><i class="ti ti-history"></i>Nessun digiuno registrato.</div>'; stats.innerHTML=''; renderFChart([]); return; }
+  renderProtocols(); renderStreak();
+  var list=document.getElementById("histList"), stats=document.getElementById("statsRow");
+  if(!fasts.length) { list.innerHTML='<div class="empty"><i class="ti ti-history"></i>Nessun digiuno registrato.</div>'; stats.innerHTML=""; renderFChart([]); return; }
   var sum=0, best=0;
   for(var i=0;i<fasts.length;i++) { sum+=fasts[i].durationH; if(fasts[i].durationH>best) best=fasts[i].durationH; }
   var avg=sum/fasts.length;
@@ -744,18 +774,18 @@ function renderStorico() {
     '<div class="sc"><div class="sv">'+avg.toFixed(1)+'h</div><div class="sl">Media durata</div></div>'+
     '<div class="sc"><div class="sv">'+best.toFixed(1)+'h</div><div class="sl">Record personale</div></div>'+
     '<div class="sc"><div class="sv">'+Math.round(sum)+'h</div><div class="sl">Ore totali</div></div>';
-  var html='';
+  var html="";
   for(var i=0;i<fasts.length;i++) {
     var f=fasts[i], s=new Date(f.start), e=new Date(f.end), ph=getPhase(f.durationH), pr=getProto();
     var ok=pr.tgt>0&&f.durationH>=pr.tgt;
     html+='<div class="hi"><div class="hibar" style="background:'+ph.color+'"></div>'+
       '<div style="flex:1">'+
-      '<div style="display:flex;align-items:center;gap:6px"><span style="font-size:13px;font-weight:500;color:var(--t1)">'+fmtD(s)+'</span>'+
-      (ok?'<span style="background:var(--grnbg);color:var(--grn);font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px">✓ Obiettivo</span>':'')+'</div>'+
-      '<div style="font-size:11px;color:var(--t2);margin-top:2px">'+fmtDT(s)+' → '+fmtDT(e)+'</div>'+
-      '<div style="font-size:11px;color:'+ph.color+';margin-top:2px">'+ph.name+'</div>'+
-      (f.cups?'<div style="font-size:11px;color:var(--blue);margin-top:1px"><i class="ti ti-droplet" style="font-size:11px;vertical-align:-1px"></i> '+f.cups+' bicchieri</div>':'')+
-      (f.note?'<div style="font-size:11px;color:var(--t3);margin-top:2px;font-style:italic">'+f.note.substring(0,60)+'</div>':'')+'</div>'+
+      '<div style="display:flex;align-items:center;gap:6px"><span style="font-size:13px;font-weight:500;color:var(--t1)">'+fmtD(s)+"</span>"+
+      (ok?'<span style="background:var(--grnbg);color:var(--grn);font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px">✓ Obiettivo</span>':"")+"</div>"+
+      '<div style="font-size:11px;color:var(--t2);margin-top:2px">'+fmtDT(s)+" → "+fmtDT(e)+"</div>"+
+      '<div style="font-size:11px;color:'+ph.color+';margin-top:2px">'+ph.name+"</div>"+
+      (f.cups?'<div style="font-size:11px;color:var(--blue);margin-top:1px"><i class="ti ti-droplet" style="font-size:11px;vertical-align:-1px"></i> '+f.cups+" bicchieri</div>":"")+
+      (f.note?'<div style="font-size:11px;color:var(--t3);margin-top:2px;font-style:italic">'+f.note.substring(0,60)+"</div>":"")+"</div>"+
       '<div style="text-align:right;flex-shrink:0"><div style="font-size:15px;font-weight:600;color:var(--t1)">'+f.durationH.toFixed(1)+'h</div><div style="font-size:10px;color:var(--t3)">durata</div></div>'+
       '<button class="hibtn" style="color:var(--blue)" onclick="openEdit('+i+')"><i class="ti ti-pencil"></i></button>'+
       '<button class="hibtn" style="color:var(--t3)" onclick="delFast('+i+')"><i class="ti ti-trash"></i></button></div>';
@@ -765,223 +795,197 @@ function renderStorico() {
 }
 
 function delFast(i) {
-  if(!confirm('Eliminare questo digiuno?')) return;
-  fasts.splice(i,1); localStorage.setItem('ij_fasts',JSON.stringify(fasts)); renderStorico();
+  if(!confirm("Eliminare questo digiuno?")) return;
+  fasts.splice(i,1); localStorage.setItem("ij_fasts",JSON.stringify(fasts)); renderStorico();
 }
 
 function renderStreak() {
-  var card=document.getElementById('streakCard'), bar=document.getElementById('streakBar'), lbEl=document.getElementById('streakLbls');
-  if(!fasts.length) { card.style.display='none'; return; }
-  card.style.display=''; bar.innerHTML=''; lbEl.innerHTML='';
+  var card=document.getElementById("streakCard"), bar=document.getElementById("streakBar"), lbEl=document.getElementById("streakLbls");
+  if(!fasts.length) { card.style.display="none"; return; }
+  card.style.display=""; bar.innerHTML=""; lbEl.innerHTML="";
   var now=new Date(), pr=getProto();
   for(var i=6;i>=0;i--) {
     var d=new Date(now); d.setDate(d.getDate()-i);
-    var dk=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
-    var dayStart=new Date(dk+'T00:00:00'), dayEnd=new Date(dk+'T23:59:59');
+    var dk=d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
     var maxH=0;
     for(var j=0;j<fasts.length;j++) {
-      // Conta il digiuno sul giorno in cui è INIZIATO
-      if(fasts[j].start.startsWith(dk)) {
+      if(fasts[j].start.substring(0,10)===dk) {
         if(fasts[j].durationH>maxH) maxH=fasts[j].durationH;
       }
     }
     var goalOk=pr.tgt>0&&maxH>=pr.tgt;
-    var div=document.createElement('div'); div.className='sd'+(goalOk?' goal':maxH>0?' done':'');
-    div.textContent=maxH>0?Math.round(maxH)+'h':'—'; bar.appendChild(div);
-    var lb=document.createElement('span'); lb.textContent=pad(d.getDate())+'/'+pad(d.getMonth()+1); lbEl.appendChild(lb);
+    var div=document.createElement("div"); div.className="sd"+(goalOk?" goal":maxH>0?" done":"");
+    div.textContent=maxH>0?Math.round(maxH)+"h":"—"; bar.appendChild(div);
+    var lb=document.createElement("span"); lb.textContent=pad(d.getDate())+"/"+pad(d.getMonth()+1); lbEl.appendChild(lb);
   }
 }
 
 function renderFChart(data) {
   if(fChartInst) { fChartInst.destroy(); fChartInst=null; }
-  var ctx=document.getElementById('fChart');
-  if(!data.length) {
-    var wrap=document.getElementById('fChartWrap');
-    var ew=wrap?wrap.offsetWidth:320;
-    ctx.width=ew; ctx.height=160;
-    var cx=ctx.getContext('2d');
-    cx.clearRect(0,0,ctx.width,ctx.height);
-    cx.fillStyle='#9c9a92';
-    cx.font='13px sans-serif';
-    cx.textAlign='center';
-    cx.fillText('Nessun dato ancora',ctx.width/2,ctx.height/2);
-    return;
-  }
+  var ctx=document.getElementById("fChart");
+  if(!data.length) { ctx.width=300; ctx.height=150; return; }
   var sorted=[].concat(data).reverse().slice(-12);
   var labels=[], durs=[], cups=[];
   for(var i=0;i<sorted.length;i++) {
     var d=new Date(sorted[i].start);
-    labels.push(pad(d.getDate())+'/'+pad(d.getMonth()+1));
+    labels.push(pad(d.getDate())+"/"+pad(d.getMonth()+1));
     durs.push(parseFloat(sorted[i].durationH.toFixed(1)));
-    var dayK=sorted[i].start.substring(0,10); // YYYY-MM-DD of start
-    cups.push(water[dayK]||0); // always read live from water tracker
+    var dayK=sorted[i].start.substring(0,10);
+    cups.push(water[dayK]||0);
   }
-  var wrap=document.getElementById('fChartWrap');
+  var wrap=document.getElementById("fChartWrap");
   var availW=wrap?wrap.offsetWidth-24:320;
-  var bw=Math.max(availW, sorted.length*40);
+  var bw=Math.max(availW,sorted.length*40);
   ctx.width=bw; ctx.height=180;
-  var dark=matchMedia('(prefers-color-scheme:dark)').matches;
-  var tc=dark?'#9c9a92':'#73726c', gc=dark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)';
+  var dark=matchMedia("(prefers-color-scheme:dark)").matches;
+  var tc=dark?"#9c9a92":"#73726c", gc=dark?"rgba(255,255,255,0.06)":"rgba(0,0,0,0.06)";
   var bgColors=[], bdColors=[];
-  for(var i=0;i<durs.length;i++) { bgColors.push(getPhase(durs[i]).color+'BB'); bdColors.push(getPhase(durs[i]).color); }
-  // find max cups for y2 scale
+  for(var i=0;i<durs.length;i++) { bgColors.push(getPhase(durs[i]).color+"BB"); bdColors.push(getPhase(durs[i]).color); }
   var maxC=0; for(var i=0;i<cups.length;i++) { if(cups[i]>maxC) maxC=cups[i]; }
-  var y2max=Math.max(8, maxC+2);
-  fChartInst=new Chart(ctx,{type:'bar',data:{labels:labels,datasets:[
-    {label:'Ore',data:durs,backgroundColor:bgColors,borderColor:bdColors,borderWidth:1.5,borderRadius:4,yAxisID:'y',order:1},
-    {label:'Acqua',data:cups,type:'line',borderColor:'#4CAF50',backgroundColor:'rgba(76,175,80,0.08)',borderWidth:2,pointRadius:4,pointBackgroundColor:'#4CAF50',fill:true,yAxisID:'y2',order:0}
-  ]},options:{responsive:false,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){
-    if(ctx.dataset.yAxisID==='y') return ctx.parsed.y+'h — '+getPhase(ctx.parsed.y).name;
-    return ctx.parsed.y+' bicchieri';
+  var y2max=Math.max(8,maxC+2);
+  fChartInst=new Chart(ctx,{type:"bar",data:{labels:labels,datasets:[
+    {label:"Ore",data:durs,backgroundColor:bgColors,borderColor:bdColors,borderWidth:1.5,borderRadius:4,yAxisID:"y",order:1},
+    {label:"Acqua",data:cups,type:"line",borderColor:"#4CAF50",backgroundColor:"rgba(76,175,80,0.08)",borderWidth:2,pointRadius:4,pointBackgroundColor:"#4CAF50",fill:true,yAxisID:"y2",order:0}
+  ]},options:{responsive:false,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){
+    if(c.dataset.yAxisID==="y") return c.parsed.y+"h — "+getPhase(c.parsed.y).name;
+    return c.parsed.y+" bicchieri";
   }}}},
   scales:{
     x:{ticks:{color:tc,font:{size:10},autoSkip:false,maxRotation:0},grid:{color:gc},border:{display:false}},
-    y:{min:0,max:48,position:'left',ticks:{color:tc,font:{size:9},stepSize:12,callback:function(v){return v+'h';}},grid:{color:gc},border:{display:false}},
-    y2:{min:0,max:y2max,position:'right',ticks:{color:'#4CAF50',font:{size:9},stepSize:2},grid:{display:false},border:{display:false}}
+    y:{min:0,max:48,position:"left",ticks:{color:tc,font:{size:9},stepSize:12,callback:function(v){return v+"h";}},grid:{color:gc},border:{display:false}},
+    y2:{min:0,max:y2max,position:"right",ticks:{color:"#4CAF50",font:{size:9},stepSize:2},grid:{display:false},border:{display:false}}
   }}});
-  // Update legend with actual phase colors as gradient squares
-  var legEl=document.getElementById('fChartLegend');
-  if(legEl) {
-    var gradParts='';
-    var phaseStops=[
-      {color:'#4CAF50',pct:0},{color:'#FF9800',pct:20},{color:'#F44336',pct:40},
-      {color:'#9C27B0',pct:60},{color:'#2196F3',pct:75},{color:'#00BCD4',pct:88},{color:'#FF5722',pct:100}
-    ];
-    var grad='linear-gradient(to right';
-    for(var g=0;g<phaseStops.length;g++) grad+=','+phaseStops[g].color+' '+phaseStops[g].pct+'%';
-    grad+=')';
-    legEl.innerHTML='<div class="li"><div class="lsq" style="background:'+grad+';width:28px;border-radius:3px"></div>Ore digiuno (colore = fase raggiunta)</div>'+
-      '<div class="li"><div class="lsq" style="background:#4CAF50"></div>Acqua (bic.)</div>';
-  }
 }
 
-/* EDIT */
+/* ══════════════════════════════════════
+   EDIT
+   ══════════════════════════════════════ */
 function openEdit(i) {
   var f=fasts[i], s=new Date(f.start), e=new Date(f.end);
-  document.getElementById('editIdx').value=i;
-  document.getElementById('edSD').value=s.getFullYear()+'-'+pad(s.getMonth()+1)+'-'+pad(s.getDate());
-  document.getElementById('edST').value=pad(s.getHours())+':'+pad(s.getMinutes());
-  document.getElementById('edED').value=e.getFullYear()+'-'+pad(e.getMonth()+1)+'-'+pad(e.getDate());
-  document.getElementById('edET').value=pad(e.getHours())+':'+pad(e.getMinutes());
-  document.getElementById('edNote').value=f.note||'';
-  document.getElementById('editOverlay').classList.add('open');
+  document.getElementById("editIdx").value=i;
+  document.getElementById("edSD").value=s.getFullYear()+"-"+pad(s.getMonth()+1)+"-"+pad(s.getDate());
+  document.getElementById("edST").value=pad(s.getHours())+":"+pad(s.getMinutes());
+  document.getElementById("edED").value=e.getFullYear()+"-"+pad(e.getMonth()+1)+"-"+pad(e.getDate());
+  document.getElementById("edET").value=pad(e.getHours())+":"+pad(e.getMinutes());
+  document.getElementById("edNote").value=f.note||"";
+  document.getElementById("editOverlay").classList.add("open");
 }
-function closeEdit(e) { if(!e||e.target===document.getElementById('editOverlay')) document.getElementById('editOverlay').classList.remove('open'); }
+function closeEdit(e) { if(!e||e.target===document.getElementById("editOverlay")) document.getElementById("editOverlay").classList.remove("open"); }
 function saveEdit() {
-  var i=parseInt(document.getElementById('editIdx').value);
-  var sd=document.getElementById('edSD').value, st=document.getElementById('edST').value;
-  var ed=document.getElementById('edED').value, et=document.getElementById('edET').value;
-  var note=document.getElementById('edNote').value.trim();
-  if(!sd||!st||!ed||!et) { showToast('Compila tutti i campi'); return; }
-  var start=new Date(sd+'T'+st), end=new Date(ed+'T'+et);
-  if(end<=start) { showToast('La fine deve essere dopo l\'inizio'); return; }
+  var i=parseInt(document.getElementById("editIdx").value);
+  var sd=document.getElementById("edSD").value, st=document.getElementById("edST").value;
+  var ed=document.getElementById("edED").value, et=document.getElementById("edET").value;
+  var note=document.getElementById("edNote").value.trim();
+  if(!sd||!st||!ed||!et) { showToast("Compila tutti i campi"); return; }
+  var start=new Date(sd+"T"+st), end=new Date(ed+"T"+et);
+  if(end<=start) { showToast("La fine deve essere dopo l'inizio"); return; }
   var dur=(end-start)/3600000;
   fasts[i].start=start.toISOString(); fasts[i].end=end.toISOString(); fasts[i].durationH=dur; fasts[i].note=note;
-  localStorage.setItem('ij_fasts',JSON.stringify(fasts));
-  showToast('Modificato: '+dur.toFixed(1)+'h');
+  localStorage.setItem("ij_fasts",JSON.stringify(fasts));
+  showToast("Modificato: "+dur.toFixed(1)+"h");
   closeEdit(null); renderStorico();
 }
 
-/* GUIDE */
-function renderProtocolCards() {
-  var cont=document.getElementById('protocolCards'); cont.innerHTML='';
-  for(var idx=0;idx<PROTOCOLS_GUIDE.length;idx++) {
-    var pr=PROTOCOLS_GUIDE[idx];
-    var tags='';
-    for(var t=0;t<pr.tags.length;t++) tags+='<span class="ptag" style="background:'+pr.color+'22;color:'+pr.color+'">'+pr.tags[t]+'</span>';
-    var card=document.createElement('div');
-    card.style.cssText='border:.5px solid var(--br);border-radius:10px;margin-bottom:8px;overflow:hidden;';
-    card.innerHTML='<div style="display:flex;align-items:center;gap:10px;padding:12px 13px;cursor:pointer;min-height:48px;background:var(--bg)" onclick="toggleProt('+idx+')">'+
-      '<div style="width:32px;height:32px;border-radius:8px;background:'+pr.color+'22;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+
-      '<i class="ti '+pr.icon+'" style="font-size:16px;color:'+pr.color+'"></i></div>'+
-      '<div style="flex:1">'+
-      '<div style="font-size:14px;font-weight:600;color:var(--t1)">'+pr.name+'</div>'+
-      '<div style="font-size:11px;color:var(--t2);margin-top:1px">'+pr.subtitle+'</div></div>'+
-      '<i class="ti ti-chevron-down" id="pch-'+idx+'" style="font-size:17px;color:var(--t3);transition:transform .2s"></i></div>'+
-      '<div id="ppb-'+idx+'" style="max-height:0;overflow:hidden;transition:max-height .35s ease,padding .2s;background:var(--bg2)">'+
-      '<div style="padding:0 13px 13px">'+
-      '<div style="margin-bottom:9px;padding-top:10px">'+tags+'</div>'+
-      '<div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">'+
-      '<div style="flex:1;min-width:120px;background:var(--grnbg);border-radius:8px;padding:8px 10px">'+
-      '<div style="font-size:11px;font-weight:600;color:var(--grn);margin-bottom:3px">✓ Vantaggi</div>'+
-      '<div style="font-size:12px;color:var(--t2);line-height:1.5">'+pr.pros+'</div></div>'+
-      '<div style="flex:1;min-width:120px;background:var(--redbg);border-radius:8px;padding:8px 10px">'+
-      '<div style="font-size:11px;font-weight:600;color:var(--red);margin-bottom:3px">✗ Svantaggi</div>'+
-      '<div style="font-size:12px;color:var(--t2);line-height:1.5">'+pr.cons+'</div></div></div>'+
-      pr.body+'</div></div>';
-    cont.appendChild(card);
-  }
-}
-
-function toggleProt(idx) {
-  var b=document.getElementById('ppb-'+idx), ch=document.getElementById('pch-'+idx);
-  var open=b.style.maxHeight&&b.style.maxHeight!=='0px';
-  // close all
-  for(var i=0;i<PROTOCOLS_GUIDE.length;i++) {
-    var ob=document.getElementById('ppb-'+i), oc=document.getElementById('pch-'+i);
-    if(ob) { ob.style.maxHeight='0px'; ob.style.padding='0'; }
-    if(oc) oc.style.transform='';
-  }
-  if(!open) {
-    b.style.maxHeight='800px'; b.style.padding='';
-    ch.style.transform='rotate(180deg)';
-  }
-}
-
+/* ══════════════════════════════════════
+   GUIDE
+   ══════════════════════════════════════ */
 function renderGuida() {
-  var cont=document.getElementById('phaseCards'); cont.innerHTML='';
+  var cont=document.getElementById("phaseCards"); cont.innerHTML="";
   for(var idx=0;idx<PHASES.length;idx++) {
-    var ph=PHASES[idx];
-    var tags='';
-    for(var t=0;t<ph.tags.length;t++) tags+='<span class="ptag" style="background:'+ph.color+'22;color:'+ph.color+'">'+ph.tags[t]+'</span>';
-    var card=document.createElement('div'); card.className='pic';
+    var ph=PHASES[idx], tags="";
+    for(var t=0;t<ph.tags.length;t++) tags+='<span class="ptag" style="background:'+ph.color+'22;color:'+ph.color+'">'+ph.tags[t]+"</span>";
+    var card=document.createElement("div"); card.className="pic";
     card.innerHTML='<div class="pich" onclick="togglePh('+idx+')">'+
       '<div class="picd" style="background:'+ph.color+'"></div>'+
       '<div class="picn">'+ph.name+'</div>'+
-      '<div class="pichr">'+ph.h0+'–'+ph.h1+'h</div>'+
+      '<div class="pichr">'+ph.h0+"–"+ph.h1+"h</div>"+
       '<i class="ti ti-chevron-down picch" id="ch-'+idx+'"></i></div>'+
-      '<div class="picb" id="pb-'+idx+'"><div style="margin-bottom:8px">'+tags+'</div>'+ph.body+'</div>';
+      '<div class="picb" id="pb-'+idx+'"><div style="margin-bottom:8px">'+tags+"</div>"+ph.body+"</div>";
     cont.appendChild(card);
   }
   renderProtocolCards();
-  var tips=document.getElementById('tipsList'), html='';
+  var tips=document.getElementById("tipsList"), html="";
   for(var i=0;i<TIPS.length;i++) {
-    html+='<div style="display:flex;gap:10px;padding:9px 0;border-bottom:'+(i<TIPS.length-1?'.5px solid var(--br)':'none')+'">'+
+    html+='<div style="display:flex;gap:10px;padding:9px 0;border-bottom:'+(i<TIPS.length-1?".5px solid var(--br)":"none")+'">'+
       '<i class="ti '+TIPS[i].ico+'" style="font-size:18px;color:var(--blue);flex-shrink:0;margin-top:1px"></i>'+
-      '<p style="font-size:13px;color:var(--t2);line-height:1.55;margin:0">'+TIPS[i].t+'</p></div>';
+      '<p style="font-size:13px;color:var(--t2);line-height:1.55;margin:0">'+TIPS[i].t+"</p></div>";
   }
   tips.innerHTML=html;
 }
-function togglePh(idx) {
-  var b=document.getElementById('pb-'+idx), c=document.getElementById('ch-'+idx);
-  var open=b.classList.contains('open');
-  var allB=document.querySelectorAll('.picb'), allC=document.querySelectorAll('.picch');
-  for(var i=0;i<allB.length;i++) { allB[i].classList.remove('open'); allC[i].style.transform=''; }
-  if(!open) { b.classList.add('open'); c.style.transform='rotate(180deg)'; }
+
+function renderProtocolCards() {
+  var cont=document.getElementById("protocolCards"); cont.innerHTML="";
+  for(var idx=0;idx<PROTOCOLS_GUIDE.length;idx++) {
+    var pr=PROTOCOLS_GUIDE[idx], tags="";
+    for(var t=0;t<pr.tags.length;t++) tags+='<span class="ptag" style="background:'+pr.color+'22;color:'+pr.color+'">'+pr.tags[t]+"</span>";
+    var card=document.createElement("div");
+    card.style.cssText="border:.5px solid var(--br);border-radius:10px;margin-bottom:8px;overflow:hidden;";
+    card.innerHTML='<div style="display:flex;align-items:center;gap:10px;padding:12px 13px;cursor:pointer;background:var(--bg)" onclick="toggleProt('+idx+')">'+
+      '<div style="width:32px;height:32px;border-radius:8px;background:'+pr.color+'22;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+
+      '<i class="ti '+pr.icon+'" style="font-size:16px;color:'+pr.color+'"></i></div>'+
+      '<div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--t1)">'+pr.name+"</div>"+
+      '<div style="font-size:11px;color:var(--t2);margin-top:1px">'+pr.subtitle+"</div></div>"+
+      '<i class="ti ti-chevron-down" id="pch-'+idx+'" style="font-size:17px;color:var(--t3);transition:transform .2s"></i></div>'+
+      '<div id="ppb-'+idx+'" style="max-height:0;overflow:hidden;transition:max-height .35s ease;background:var(--bg2)">'+
+      '<div style="padding:10px 13px 13px">'+
+      '<div style="margin-bottom:9px">'+tags+"</div>"+
+      '<div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">'+
+      '<div style="flex:1;min-width:120px;background:var(--grnbg);border-radius:8px;padding:8px 10px">'+
+      '<div style="font-size:11px;font-weight:600;color:var(--grn);margin-bottom:3px">✓ Vantaggi</div>'+
+      '<div style="font-size:12px;color:var(--t2);line-height:1.5">'+pr.pros+"</div></div>"+
+      '<div style="flex:1;min-width:120px;background:var(--redbg);border-radius:8px;padding:8px 10px">'+
+      '<div style="font-size:11px;font-weight:600;color:var(--red);margin-bottom:3px">✗ Svantaggi</div>'+
+      '<div style="font-size:12px;color:var(--t2);line-height:1.5">'+pr.cons+"</div></div></div>"+
+      pr.body+"</div></div>";
+    cont.appendChild(card);
+  }
 }
 
-/* SHARE */
-function openShare() { document.getElementById('shareLink').textContent=window.location.href.split('?')[0]; document.getElementById('shareOverlay').classList.add('open'); }
-function closeShare(e) { if(!e||e.target===document.getElementById('shareOverlay')) document.getElementById('shareOverlay').classList.remove('open'); }
+function togglePh(idx) {
+  var b=document.getElementById("pb-"+idx), c=document.getElementById("ch-"+idx);
+  var open=b.classList.contains("open");
+  var allB=document.querySelectorAll(".picb"), allC=document.querySelectorAll(".picch");
+  for(var i=0;i<allB.length;i++) { allB[i].classList.remove("open"); allC[i].style.transform=""; }
+  if(!open) { b.classList.add("open"); c.style.transform="rotate(180deg)"; }
+}
+
+function toggleProt(idx) {
+  var b=document.getElementById("ppb-"+idx), ch=document.getElementById("pch-"+idx);
+  var open=b.style.maxHeight&&b.style.maxHeight!=="0px";
+  for(var i=0;i<PROTOCOLS_GUIDE.length;i++) {
+    var ob=document.getElementById("ppb-"+i), oc=document.getElementById("pch-"+i);
+    if(ob) { ob.style.maxHeight="0px"; }
+    if(oc) oc.style.transform="";
+  }
+  if(!open) { b.style.maxHeight="800px"; ch.style.transform="rotate(180deg)"; }
+}
+
+/* ══════════════════════════════════════
+   SHARE
+   ══════════════════════════════════════ */
+function openShare() { document.getElementById("shareLink").textContent=window.location.href.split("?")[0]; document.getElementById("shareOverlay").classList.add("open"); }
+function closeShare(e) { if(!e||e.target===document.getElementById("shareOverlay")) document.getElementById("shareOverlay").classList.remove("open"); }
 function copyLink() {
-  var url=window.location.href.split('?')[0];
-  if(navigator.clipboard) { navigator.clipboard.writeText(url).then(function(){ showToast('Link copiato!'); }); }
-  else { var ta=document.createElement('textarea'); ta.value=url; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast('Link copiato!'); }
+  var url=window.location.href.split("?")[0];
+  if(navigator.clipboard) { navigator.clipboard.writeText(url).then(function(){ showToast("Link copiato!"); }); }
+  else { var ta=document.createElement("textarea"); ta.value=url; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); showToast("Link copiato!"); }
   closeShare(null);
 }
 function shareNative() {
-  var url=window.location.href.split('?')[0];
-  if(navigator.share) { navigator.share({title:'Digiuno Intermittente',text:'App gratuita per il digiuno intermittente!',url:url}).then(function(){ closeShare(null); }).catch(function(){}); }
+  var url=window.location.href.split("?")[0];
+  if(navigator.share) { navigator.share({title:"Digiuno Intermittente",text:"App gratuita per il digiuno intermittente!",url:url}).then(function(){ closeShare(null); }).catch(function(){}); }
   else { copyLink(); }
 }
 
-/* EXPORT / IMPORT */
+/* ══════════════════════════════════════
+   EXPORT / IMPORT
+   ══════════════════════════════════════ */
 function exportData() {
   var data={version:3,date:new Date().toISOString(),fasts:fasts,water:water,wGoal:wGoal,weights:weights,diary:diary,proto:proto};
-  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
   var url=URL.createObjectURL(blob);
-  var a=document.createElement('a'); a.href=url; a.download='digiuno-backup-'+todayKey()+'.json'; a.click();
-  URL.revokeObjectURL(url); showToast('Backup esportato!');
+  var a=document.createElement("a"); a.href=url; a.download="digiuno-backup-"+todayKey()+".json"; a.click();
+  URL.revokeObjectURL(url); showToast("Backup esportato!");
 }
 function importData(ev) {
   var file=ev.target.files[0]; if(!file) return;
@@ -989,82 +993,61 @@ function importData(ev) {
   reader.onload=function(e) {
     try {
       var d=JSON.parse(e.target.result);
-      if(!d.version) throw new Error('invalid');
-      if(!confirm('Importare? I dati attuali verranno sovrascritti.')) return;
-      if(d.fasts)   { fasts=d.fasts;     localStorage.setItem('ij_fasts',JSON.stringify(fasts)); }
-      if(d.water)   { water=d.water;     localStorage.setItem('ij_water',JSON.stringify(water)); }
-      if(d.wGoal)   { wGoal=d.wGoal;     localStorage.setItem('ij_wgoal',wGoal); }
-      if(d.weights) { weights=d.weights; localStorage.setItem('ij_weight',JSON.stringify(weights)); }
-      if(d.diary)   { diary=d.diary;     localStorage.setItem('ij_diary',JSON.stringify(diary)); }
-      if(d.proto)   { proto=d.proto;     localStorage.setItem('ij_proto',proto); }
-      showToast('Dati importati!'); renderStorico(); renderWater();
-    } catch(err) { showToast('Errore: file non valido'); }
+      if(!d.version) throw new Error("invalid");
+      if(!confirm("Importare? I dati attuali verranno sovrascritti.")) return;
+      if(d.fasts)   { fasts=d.fasts;     localStorage.setItem("ij_fasts",JSON.stringify(fasts)); }
+      if(d.water)   { water=d.water;     localStorage.setItem("ij_water",JSON.stringify(water)); }
+      if(d.wGoal)   { wGoal=d.wGoal;     localStorage.setItem("ij_wgoal",wGoal); }
+      if(d.weights) { weights=d.weights; localStorage.setItem("ij_weight",JSON.stringify(weights)); }
+      if(d.diary)   { diary=d.diary;     localStorage.setItem("ij_diary",JSON.stringify(diary)); }
+      if(d.proto)   { proto=d.proto;     localStorage.setItem("ij_proto",proto); }
+      showToast("Dati importati!"); renderStorico(); renderWater();
+    } catch(err) { showToast("Errore: file non valido"); }
   };
-  reader.readAsText(file); ev.target.value='';
+  reader.readAsText(file); ev.target.value="";
 }
 
-/* MANUAL UPDATE */
-function manualUpdate() {
-  if(!confirm('Aggiornare l\'app? La pagina verrà ricaricata.')) return;
-  if('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(function(regs){ regs.forEach(function(r){ r.update(); }); setTimeout(function(){ window.location.reload(true); },800); });
-  } else { window.location.reload(true); }
+/* ══════════════════════════════════════
+   AUTO UPDATE
+   ══════════════════════════════════════ */
+var swReg = null;
+
+function showUpdateBanner() {
+  document.getElementById("updateBanner").classList.add("show");
+}
+function dismissUpdate() {
+  document.getElementById("updateBanner").classList.remove("show");
+}
+function doUpdate() {
+  if(swReg && swReg.waiting) {
+    swReg.waiting.postMessage({type:"SKIP_WAITING"});
+  }
 }
 
-/* INIT */
-if('serviceWorker' in navigator) {
-  var swReg = null;
-
-  navigator.serviceWorker.register('sw.js', {updateViaCache:'none'}).then(function(reg) {
+/* ══════════════════════════════════════
+   INIT
+   ══════════════════════════════════════ */
+if("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js", {updateViaCache:"none"}).then(function(reg) {
     swReg = reg;
-
-    // Controlla subito se c'è già un worker in attesa
-    if(reg.waiting) {
-      showUpdateBanner();
-    }
-
-    // Quando arriva un nuovo service worker in attesa
-    reg.addEventListener('updatefound', function() {
-      var newWorker = reg.installing;
-      newWorker.addEventListener('statechange', function() {
-        if(newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+    if(reg.waiting) { showUpdateBanner(); }
+    reg.addEventListener("updatefound", function() {
+      var nw=reg.installing;
+      nw.addEventListener("statechange", function() {
+        if(nw.state==="installed" && navigator.serviceWorker.controller) {
           showUpdateBanner();
         }
       });
     });
   }).catch(function(){});
 
-  // Quando il SW si attiva (dopo skipWaiting), ricarica la pagina
-  var refreshing = false;
-  navigator.serviceWorker.addEventListener('controllerchange', function() {
-    if(!refreshing) {
-      refreshing = true;
-      window.location.reload();
-    }
+  var refreshing=false;
+  navigator.serviceWorker.addEventListener("controllerchange", function() {
+    if(!refreshing) { refreshing=true; window.location.reload(); }
   });
 }
 
-function showUpdateBanner() {
-  var banner = document.getElementById('updateBanner');
-  if(banner) { banner.style.display = 'flex'; }
-}
-
-function dismissUpdate() {
-  var banner = document.getElementById('updateBanner');
-  if(banner) { banner.style.display = 'none'; }
-}
-
-function doUpdate() {
-  if(swReg && swReg.waiting) {
-    swReg.waiting.postMessage({type: 'SKIP_WAITING'});
-  }
-}
-var _n=new Date();
-document.getElementById('sDate').value=_n.getFullYear()+'-'+pad(_n.getMonth()+1)+'-'+pad(_n.getDate());
-document.getElementById('sTime').value=pad(_n.getHours())+':'+pad(_n.getMinutes());
-document.getElementById('wDateSel').value=wDate;
-renderFase();
-renderWater();
+checkAuth();
 </script>
 </body>
 </html>
